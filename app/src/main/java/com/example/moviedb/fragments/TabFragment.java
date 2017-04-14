@@ -17,8 +17,7 @@ public class TabFragment extends Fragment {
 
     public static TabLayout tabLayout;
     public static ViewPager viewPager;
-    public static int int_items = 4;
-    String tab1 = "MY TAB!";
+    public static int int_items = 3;
 
     @Nullable
     @Override
@@ -26,7 +25,6 @@ public class TabFragment extends Fragment {
         View x = inflater.inflate(R.layout.tab_layout, null);
         tabLayout = (TabLayout) x.findViewById(R.id.tabs);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
-
 
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
 
@@ -51,10 +49,8 @@ public class TabFragment extends Fragment {
                 case 0:
                     return new UpComingFragment();
                 case 1:
-                    return new NowPlayingFragment();
-                case 2:
                     return new PopularFragment();
-                case 3:
+                case 2:
                     return new TopRatedFragment();
             }
             return null;
@@ -71,14 +67,11 @@ public class TabFragment extends Fragment {
                 case 0:
                     return "UPCOMING";
                 case 1:
-                    return "NOW PLAYING";
-                case 2:
                     return "POPULAR";
-                case 3:
+                case 2:
                     return "TOP RATED";
             }
             return null;
         }
     }
-
 }
