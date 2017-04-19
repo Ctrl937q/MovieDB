@@ -10,5 +10,6 @@
     <color name="white">#FFF</color>
     <color name="green">#31b657</color>
     <color name="dark_green">#1f5e2d</color>
+    <color name="color_background">#647f8b</color>
 
 </resources>
