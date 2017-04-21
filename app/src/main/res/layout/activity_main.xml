@@ -41,12 +41,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/containerView">
+
+
+
         </FrameLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+
         </android.support.v4.view.ViewPager>
 
         <android.support.design.widget.NavigationView
@@ -58,9 +63,10 @@
             android:id="@+id/shitstuff"
             app:itemTextColor="@color/black"
             app:menu="@menu/drawermenu"
-            android:layout_marginTop="-24dp"
-            />
+            android:layout_marginTop="-24dp" />
 
     </android.support.v4.widget.DrawerLayout>
+
+
 
 </LinearLayout>

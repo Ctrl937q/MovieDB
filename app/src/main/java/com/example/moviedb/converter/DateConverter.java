@@ -1,4 +1,4 @@
-package com.example.moviedb.Converter;
+package com.example.moviedb.converter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

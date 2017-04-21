@@ -8,13 +8,13 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_recycler_view_first"
+            android:id="@+id/rv_recycler_view_second"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progressBarSecond"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
