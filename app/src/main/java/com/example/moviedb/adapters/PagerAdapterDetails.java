@@ -5,16 +5,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.example.moviedb.fragments.FragmentCast;
+import com.example.moviedb.fragments.FragmentInfo;
+import com.example.moviedb.fragments.FragmentOverView;
 import com.example.moviedb.fragments.PopularFragment;
 import com.example.moviedb.fragments.TopRatedFragment;
 import com.example.moviedb.fragments.UpComingFragment;
 
-public class PagerAdapter extends FragmentPagerAdapter {
+public class PagerAdapterDetails extends FragmentPagerAdapter {
 
-    private String tabTitles[] = new String[]{"UpComing", "Popular", "Top Rating"};
+    private String tabTitles[] = new String[]{"Info", "Cast", "Overview"};
     private Context context;
 
-    public PagerAdapter(FragmentManager fm, Context context) {
+    public PagerAdapterDetails(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
     }
@@ -28,11 +31,11 @@ public class PagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new UpComingFragment();
+                return new FragmentInfo();
             case 1:
-                return new PopularFragment();
+                return new FragmentCast();
             case 2:
-                return new TopRatedFragment();
+                return new FragmentOverView();
         }
         return null;
     }

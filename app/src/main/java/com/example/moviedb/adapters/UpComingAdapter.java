@@ -1,6 +1,7 @@
 package com.example.moviedb.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moviedb.ActivityDetails;
 import com.example.moviedb.Const;
 
 import com.example.moviedb.R;
@@ -98,6 +100,13 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ActivityDetails.class);
+                context.startActivity(intent);
+            }
+        });
         try {
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
@@ -114,7 +123,6 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
 
     @Override
     public int getItemCount() {
-        Log.d("wtf", "" + movies.size());
         return movies.size() + 1;
     }
 

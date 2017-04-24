@@ -1,6 +1,7 @@
 package com.example.moviedb.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.moviedb.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.R;
@@ -17,6 +20,7 @@ import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,11 +31,13 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
 
     List<Movie> movies;
     private Context context;
+    LayoutInflater layoutInflater;
 
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
 
     public TopRatingAdapter(Context context, List<Movie> movies) {
+        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
@@ -45,10 +51,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
             FooterViewHolder vh = new FooterViewHolder(v);
             return vh;
         }
-
-        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
-        NormalViewHolder vh = new NormalViewHolder(v);
-        return vh;
+        return new Holder(layoutInflater.inflate(R.layout.item, parent, false));
     }
 
     public class FooterViewHolder extends Holder {
@@ -73,6 +76,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
                                 e.printStackTrace();
                             }
                         }
+
                         @Override
                         public void onFailure(Call<MovieResponse> call, Throwable t) {
                         }
@@ -82,26 +86,20 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         }
     }
 
-    public class NormalViewHolder extends Holder {
-        public NormalViewHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
-    }
-
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ActivityDetails.class);
+                context.startActivity(intent);
+            }
+        });
         try {
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
                     .resize(140, 170).centerCrop().into(holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
-
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
         } catch (IndexOutOfBoundsException e) {
@@ -110,9 +108,9 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
 
     }
 
+
     @Override
     public int getItemCount() {
-        Log.d("wtf", "" + movies.size());
         return movies.size() + 1;
     }
 
