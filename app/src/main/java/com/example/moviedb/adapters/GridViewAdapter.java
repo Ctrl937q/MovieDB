@@ -78,6 +78,7 @@ public class GridViewAdapter extends BaseAdapter {
                 if(v.getId() == rowView.getId()){
                     Intent intent = new Intent(context, ActivityDetails.class);
                     intent.putExtra("id", relatedMovies.get(position).getId());
+                    intent.putExtra("title", relatedMovies.get(position).getTitle());
                     context.startActivity(intent);
                 }
             }
