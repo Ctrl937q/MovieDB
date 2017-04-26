@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linear"
+            android:layout_marginBottom="30dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
@@ -108,22 +109,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp" />
-
             </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linear_1">
+            android:orientation="vertical"
+            android:layout_below="@+id/linear_1"
+            android:background="@color/color_background_related_movies">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginTop="18dp"
+                android:text="RELATED MOVIES"
+                android:layout_marginLeft="20dp"
+                android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="7dp"
                 android:id="@+id/recycler_view_related_movies"
                 android:layout_width="match_parent"
+                android:layout_marginRight="3dp"
                 android:layout_height="wrap_content">
 
             </android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

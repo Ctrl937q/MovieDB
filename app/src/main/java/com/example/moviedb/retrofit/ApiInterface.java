@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.MovieDetails;
 import com.example.moviedb.model.MovieResponse;
+import com.example.moviedb.model.Similar;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -24,8 +25,10 @@ public interface ApiInterface {
 
 
 
-
     @GET("movie/{id}?append_to_response=releases%2Ctrailers%2Ccasts%2Cimages%2Csimilar")
     Call<MovieDetails> getGenre(@Path("id") Integer id, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}?append_to_response=releases%2Ctrailers%2Ccasts%2Cimages%2Csimilar")
+    Call<Similar> getSimilar(@Path("id") Integer id, @Query("api_key") String apiKey);
 
 }

@@ -11,6 +11,7 @@
     <color name="green">#31b657</color>
     <color name="dark_green">#1f5e2d</color>
     <color name="color_background">#647f8b</color>
-    <color name="color_background_details">#f1b9ced7</color>
+    <color name="color_background_details">#f1a1b1b7</color>
+    <color name="color_background_related_movies">#f190a198</color>
 
 </resources>
