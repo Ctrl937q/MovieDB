@@ -13,5 +13,6 @@
     <color name="color_background">#647f8b</color>
     <color name="color_background_details">#f1a1b1b7</color>
     <color name="color_background_related_movies">#f190a198</color>
+    <color name="color_buttor_more_related_movies">#d01f5e3d</color>
 
 </resources>

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.example.moviedb.adapters.PagerAdapterDetails;
 
 public class ActivityDetails extends AppCompatActivity {
+
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     PagerAdapter pagerAdapter;

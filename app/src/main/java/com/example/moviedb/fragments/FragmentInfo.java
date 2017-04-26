@@ -2,36 +2,28 @@ package com.example.moviedb.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
+import com.example.moviedb.adapters.GridViewAdapter;
 import com.example.moviedb.adapters.RelatedMoviesAdapter;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.MovieDetails;
-import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.model.ProductionCompany;
-import com.example.moviedb.model.Result;
 import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,12 +51,13 @@ public class FragmentInfo extends Fragment {
     private List<ProductionCompany> listCompanies;
     private List<Genre> listGenres;
     private ProgressBar progressBar;
-    private RecyclerView recyclerView;
+    // private RecyclerView recyclerView;
     private List<Similar.Result> listRelatedMovies;
     private ArrayList<String> listStringCompany;
     private ArrayList<String> listStringGenres;
     private RelatedMoviesAdapter relatedMoviesAdapter;
-    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    // private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    GridView gridView;
 
 
     @Override
@@ -81,8 +74,9 @@ public class FragmentInfo extends Fragment {
         text_view_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details);
         text_view_genre = (TextView) rootView.findViewById(R.id.text_view_genre);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_details);
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_related_movies);
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        //recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_related_movies);
+        //staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
 
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
@@ -116,30 +110,32 @@ public class FragmentInfo extends Fragment {
                     }
                     textView_production_countries.setText("" + production_countries);
 
-
                     for (int i = 0; i < listCompanies.size(); i++) {
                         listStringCompany.add(listCompanies.get(i).getName());
                     }
+
                     textView_production_companies.setText("" + TextUtils.join(", ", listStringCompany));
+
                     for (int i = 0; i < listGenres.size(); i++) {
                         listStringGenres.add(listGenres.get(i).getName());
                     }
                     text_view_genre.setText("" + TextUtils.join(", ", listStringGenres));
                     text_view_votes.setText("" + votes + " votes");
 
-
                     listRelatedMovies = response.body().getSimilar().getResults();
 
                     Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
                             .placeholder(R.drawable.placeholder_backdrop)
+                            .resize(700, 500)
                             .into(imageView_backdrop_path);
                     Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path).
                             placeholder(R.drawable.placeholder_backdrop)
-                            .resize(170, 200).centerCrop()
+                            .resize(170, 180)
                             .into(imageView_poster_path);
-                    relatedMoviesAdapter = new RelatedMoviesAdapter(getActivity(), listRelatedMovies);
-                    recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                    recyclerView.setAdapter(relatedMoviesAdapter);
+                    //relatedMoviesAdapter = new RelatedMoviesAdapter(getActivity(), listRelatedMovies);
+                    gridView.setAdapter(new GridViewAdapter(getActivity(), listRelatedMovies));
+                    //recyclerView.setLayoutManager(staggeredGridLayoutManager);
+                    //recyclerView.setAdapter(relatedMoviesAdapter);
 
                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
@@ -153,6 +149,8 @@ public class FragmentInfo extends Fragment {
             }
         });
 
+
         return rootView;
     }
+
 }

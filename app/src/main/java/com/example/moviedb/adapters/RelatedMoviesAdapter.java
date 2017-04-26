@@ -2,21 +2,16 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
-import com.example.moviedb.model.Movie;
-import com.example.moviedb.model.Result;
 import com.example.moviedb.model.Similar;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdapter.Holder> {
@@ -24,7 +19,6 @@ public class RelatedMoviesAdapter extends RecyclerView.Adapter<RelatedMoviesAdap
     List<Similar.Result> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
-    boolean click = false;
 
     public RelatedMoviesAdapter(Context context, List<Similar.Result> relatedMovies) {
         layoutInflater = LayoutInflater.from(context);
