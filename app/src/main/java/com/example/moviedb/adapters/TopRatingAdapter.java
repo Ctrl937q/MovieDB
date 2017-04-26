@@ -3,7 +3,6 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,9 +91,12 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ActivityDetails.class);
+                intent.putExtra("id", movies.get(position).getId());
+                intent.putExtra("title", movies.get(position).getTitle());
                 context.startActivity(intent);
             }
         });
+
         try {
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
@@ -105,7 +107,6 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -140,4 +141,3 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         }
     }
 }
-

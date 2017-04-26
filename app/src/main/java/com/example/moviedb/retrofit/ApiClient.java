@@ -1,11 +1,9 @@
 package com.example.moviedb.retrofit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-/**
- * Created by Renan Dias on 10/02/17.
- */
 
 public class ApiClient {
 
@@ -13,12 +11,16 @@ public class ApiClient {
     private static Retrofit retrofit;
 
     public static ApiInterface getClient() {
+       /* HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();*/
         if(retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
+
 
         ApiInterface apiService = retrofit.create(ApiInterface.class);
         return apiService;

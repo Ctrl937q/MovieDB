@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.example.moviedb.retrofit.ApiClient;
 
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,7 +29,6 @@ import retrofit2.Response;
 public class TopRatedFragment extends Fragment {
 
     List<Movie> list;
-
     RecyclerView rv;
     ProgressBar progressBar;
     TopRatingAdapter topRatingAdapter;
@@ -39,9 +41,7 @@ public class TopRatedFragment extends Fragment {
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_third);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarThird);
         linearLayoutManager = new LinearLayoutManager(getActivity());
-
         Call<MovieResponse> call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
-
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -51,6 +51,7 @@ public class TopRatedFragment extends Fragment {
                 rv.setAdapter(topRatingAdapter);
                 rv.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
+
             }
 
             @Override

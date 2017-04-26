@@ -110,7 +110,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
                     .resize(140, 170).centerCrop().into(holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
-
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
         } catch (IndexOutOfBoundsException e) {

@@ -36,26 +36,6 @@ public class Movie {
     @SerializedName("vote_average")
     private Double voteAverage;
 
-    public Movie(String posterPath, boolean adult, String overview, String releaseDate,
-                 List<Integer> geneIds, Integer id, String originalTitle, String originalLanguage,
-                 String title, String backdropPath, Double popularity, Integer voteCount, Boolean video,
-                 Double voteAverage) {
-        this.posterPath = posterPath;
-        this.adult = adult;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.genreIds = geneIds;
-        this.id = id;
-        this.originalTitle = originalTitle;
-        this.originalLanguage = originalLanguage;
-        this.title = title;
-        this.backdropPath = backdropPath;
-        this.popularity = popularity;
-        this.voteCount = voteCount;
-        this.video = video;
-        this.voteAverage = voteAverage;
-    }
-
     public String getPosterPath() {
         return posterPath;
     }

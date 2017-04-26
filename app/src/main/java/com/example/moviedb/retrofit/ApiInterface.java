@@ -1,9 +1,14 @@
 package com.example.moviedb.retrofit;
 
+import android.content.Intent;
+
+import com.example.moviedb.model.Genre;
+import com.example.moviedb.model.MovieDetails;
 import com.example.moviedb.model.MovieResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
@@ -16,5 +21,11 @@ public interface ApiInterface {
 
     @GET("movie/upcoming?page=")
     Call<MovieResponse> getUpcomingMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
+
+
+
+
+    @GET("movie/{id}?append_to_response=releases%2Ctrailers%2Ccasts%2Cimages%2Csimilar")
+    Call<MovieDetails> getGenre(@Path("id") Integer id, @Query("api_key") String apiKey);
 
 }
