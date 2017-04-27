@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.GridViewAdapter;
-import com.example.moviedb.adapters.RelatedMoviesAdapter;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.MovieDetails;
@@ -51,14 +49,10 @@ public class FragmentInfo extends Fragment {
     private List<ProductionCompany> listCompanies;
     private List<Genre> listGenres;
     private ProgressBar progressBar;
-    // private RecyclerView recyclerView;
     private List<Similar.Result> listRelatedMovies;
     private ArrayList<String> listStringCompany;
     private ArrayList<String> listStringGenres;
-    private RelatedMoviesAdapter relatedMoviesAdapter;
-    // private StaggeredGridLayoutManager staggeredGridLayoutManager;
-    GridView gridView;
-
+    private GridView gridView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,9 +67,7 @@ public class FragmentInfo extends Fragment {
         textView_production_countries = (TextView) rootView.findViewById(R.id.text_view_production_countries);
         text_view_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details);
         text_view_genre = (TextView) rootView.findViewById(R.id.text_view_genre);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_details);
-        //recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view_related_movies);
-        //staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        //progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_details);
         gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
 
         listCompanies = new ArrayList<>();
@@ -132,15 +124,12 @@ public class FragmentInfo extends Fragment {
                             placeholder(R.drawable.placeholder_backdrop)
                             .resize(170, 180)
                             .into(imageView_poster_path);
-                    //relatedMoviesAdapter = new RelatedMoviesAdapter(getActivity(), listRelatedMovies);
                     gridView.setAdapter(new GridViewAdapter(getActivity(), listRelatedMovies));
-                    //recyclerView.setLayoutManager(staggeredGridLayoutManager);
-                    //recyclerView.setAdapter(relatedMoviesAdapter);
 
                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
-                progressBar.setVisibility(View.INVISIBLE);
+               // progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -148,7 +137,6 @@ public class FragmentInfo extends Fragment {
 
             }
         });
-
 
         return rootView;
     }

@@ -2,8 +2,10 @@ package com.example.moviedb.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +32,10 @@ public class UpComingFragment extends Fragment {
     UpComingAdapter upComingAdapter;
     LinearLayoutManager linearLayoutManager;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab, container, false);
-
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_first);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         linearLayoutManager = new LinearLayoutManager(getActivity());
