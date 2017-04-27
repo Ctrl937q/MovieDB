@@ -1,6 +1,7 @@
 package com.example.moviedb.fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -53,6 +54,7 @@ public class FragmentInfo extends Fragment {
     private ArrayList<String> listStringCompany;
     private ArrayList<String> listStringGenres;
     private GridView gridView;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,8 +69,9 @@ public class FragmentInfo extends Fragment {
         textView_production_countries = (TextView) rootView.findViewById(R.id.text_view_production_countries);
         text_view_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details);
         text_view_genre = (TextView) rootView.findViewById(R.id.text_view_genre);
-        //progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_details);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment);
         gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
+        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
 
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
@@ -121,7 +124,7 @@ public class FragmentInfo extends Fragment {
                             .resize(700, 500)
                             .into(imageView_backdrop_path);
                     Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path).
-                            placeholder(R.drawable.placeholder_backdrop)
+                            placeholder(R.drawable.placeholder_item_recycler_view)
                             .resize(170, 180)
                             .into(imageView_poster_path);
                     gridView.setAdapter(new GridViewAdapter(getActivity(), listRelatedMovies));
@@ -129,7 +132,9 @@ public class FragmentInfo extends Fragment {
                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
-               // progressBar.setVisibility(View.INVISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+                floatingActionButton.setVisibility(View.VISIBLE);
+
             }
 
             @Override
