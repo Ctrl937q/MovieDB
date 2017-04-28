@@ -2,12 +2,12 @@ package com.example.moviedb.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.UpComingAdapter;
@@ -23,18 +23,19 @@ public class UpComingFragment extends Fragment {
 
     List<Movie> list;
     RecyclerView rv;
-    ProgressBar progressBar;
+
     UpComingAdapter upComingAdapter;
     LinearLayoutManager linearLayoutManager;
+    SwipeRefreshLayout swipeRefreshLayout;
+    Call<MovieResponse> call;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab, container, false);
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_first);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         linearLayoutManager = new LinearLayoutManager(getActivity());
-
-        Call<MovieResponse> call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_upcoming_movies);
+        call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -43,13 +44,42 @@ public class UpComingFragment extends Fragment {
                 rv.setLayoutManager(linearLayoutManager);
                 rv.setAdapter(upComingAdapter);
                 rv.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
             }
         });
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
+                call.enqueue(new Callback<MovieResponse>() {
+                    @Override
+                    public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                        list = response.body().getResults();
+                        upComingAdapter = new UpComingAdapter(getActivity(), list);
+                        rv.setLayoutManager(linearLayoutManager);
+                        rv.setAdapter(upComingAdapter);
+                    }
+
+                    @Override
+                    public void onFailure(Call<MovieResponse> call, Throwable t) {
+
+                    }
+                });
+                upComingAdapter = new UpComingAdapter(getActivity(), list);
+                rv.setAdapter(upComingAdapter);
+                swipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.destroyDrawingCache();
+            }
+        });
         return rootView;
+    }
+
+    public static UpComingFragment newInstance() {
+        return new UpComingFragment();
     }
 }

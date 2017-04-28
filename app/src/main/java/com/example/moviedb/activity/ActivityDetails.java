@@ -1,43 +1,44 @@
-package com.example.moviedb;
+package com.example.moviedb.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.animation.AccelerateInterpolator;
 
-import com.example.moviedb.adapters.PagerAdapterStandart;
+import com.example.moviedb.R;
+import com.example.moviedb.adapters.PagerAdapterDetails;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityDetails extends AppCompatActivity {
 
     DrawerLayout mDrawerLayout;
     NavigationView mNavigationView;
     PagerAdapter pagerAdapter;
-    AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_details);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_details);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff);
-        appBarLayout = (AppBarLayout)findViewById(R.id.appBarLayout);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager_details);
 
-        pagerAdapter = new PagerAdapterStandart(getSupportFragmentManager(), MainActivity.this);
+        pagerAdapter = new PagerAdapterDetails(getSupportFragmentManager(), ActivityDetails.this);
         viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(3);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout_details);
         tabLayout.setupWithViewPager(viewPager);
+
+        Intent intent = getIntent();
+        String title =  intent.getStringExtra("title");
 
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -57,16 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_details);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        params.setScrollFlags(0);
+        toolbar.setTitle(title);
     }
 }
-
 
 

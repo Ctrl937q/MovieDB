@@ -134,7 +134,6 @@ public class FragmentInfo extends Fragment {
                 }
                 progressBar.setVisibility(View.INVISIBLE);
                 floatingActionButton.setVisibility(View.VISIBLE);
-
             }
 
             @Override

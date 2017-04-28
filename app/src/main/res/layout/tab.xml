@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_layout_upcoming_movies"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,7 +12,11 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_recycler_view_first"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
         </android.support.v7.widget.RecyclerView>
 
         <ProgressBar
@@ -20,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="224dp" />
+            android:layout_marginTop="224dp"
+            android:visibility="invisible" />
     </RelativeLayout>
 
-</RelativeLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
