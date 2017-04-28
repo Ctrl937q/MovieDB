@@ -33,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-       // progressBar = (ProgressBar)findViewById(R.id.progressBar);
+        // progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff);
-        appBarLayout = (AppBarLayout)findViewById(R.id.appBarLayout);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
@@ -71,12 +71,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        params.setScrollFlags(0);
     }
-
-
 }
 
 

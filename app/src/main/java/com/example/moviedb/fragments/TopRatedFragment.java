@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.TopRatingAdapter;
-import com.example.moviedb.adapters.UpComingAdapter;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
@@ -58,7 +57,7 @@ public class TopRatedFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
+                call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
                 call.enqueue(new Callback<MovieResponse>() {
                     @Override
                     public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {

@@ -136,7 +136,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linear_1"
+                android:id="@+id/linear_layout_related_movies"
                 android:background="@color/color_background_related_movies"
                 android:orientation="vertical">
 

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
@@ -25,7 +26,6 @@ public class GridViewAdapter extends BaseAdapter {
     List<Similar.Result> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
-
 
     public GridViewAdapter(Context context, List<Similar.Result> relatedMovies) {
         layoutInflater = LayoutInflater.from(context);
@@ -64,6 +64,7 @@ public class GridViewAdapter extends BaseAdapter {
         holder.imageView = (ImageView) rowView.findViewById(R.id.image_view_for_card_view_related_movies);
         holder.textViewName.setEllipsize(TextUtils.TruncateAt.END);
         holder.textViewName.setMaxLines(2);
+
         holder.textViewName.setText(relatedMovies.get(position).getTitle());
         holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                 relatedMovies.get(position).getReleaseDate()));
@@ -71,11 +72,11 @@ public class GridViewAdapter extends BaseAdapter {
                 .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
                 .resize(350, 550)
                 .into(holder.imageView);
-
+        
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == rowView.getId()){
+                if (v.getId() == rowView.getId()) {
                     Intent intent = new Intent(context, ActivityDetails.class);
                     intent.putExtra("id", relatedMovies.get(position).getId());
                     intent.putExtra("title", relatedMovies.get(position).getTitle());
