@@ -1,16 +1,23 @@
 package com.example.moviedb.fragments;
 
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.moviedb.Const;
@@ -26,6 +33,7 @@ import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +59,7 @@ public class FragmentInfo extends Fragment {
     private TextView textView_production_countries;
     private TextView text_view_genre;
     private TextView text_view_votes;
+    private TextView textView_RelatedMovies;
     private ImageView imageView_backdrop_path;
     private ImageView imageView_poster_path;
     private List<ProductionCompany> listCompanies;
@@ -62,11 +71,14 @@ public class FragmentInfo extends Fragment {
     private GridView gridView;
     private FloatingActionButton floatingActionButton;
     private ResponseClass responseClass;
-    LinearLayout linearLayout;
+    private Button button_afterRelatedMovies;
+    private LinearLayout linearLayout;
+    private RatingBar rating_bar_info_fragment;
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.info_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.info_fragment, container, false);
         responseClass = new ResponseClass();
         textView_title = (TextView) rootView.findViewById(R.id.text_view_name_film_details);
         imageView_backdrop_path = (ImageView) rootView.findViewById(R.id.image_view_backprop_details);
@@ -81,12 +93,18 @@ public class FragmentInfo extends Fragment {
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment);
         gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
-        linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_related_movies);
-        
+       // linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_related_movies);
+        textView_RelatedMovies = (TextView)rootView.findViewById(R.id.textView_RelatedMovies);
+        button_afterRelatedMovies = (Button)rootView.findViewById(R.id.button_afterRelatedMovies);
+        rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
+
+
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
+
+
 
         final int itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
@@ -94,6 +112,11 @@ public class FragmentInfo extends Fragment {
             @Override
             public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
                 try {
+                    double d = response.body().getVoteAverage() / 2;
+                    float f = (float)d;
+                    rating_bar_info_fragment.setRating(f);
+                    //Drawable progress = rating_bar_info_fragment.getProgressDrawable();
+                    //DrawableCompat.setTint(progress, Color.YELLOW);
                     title = response.body().getTitle();
                     date_release = response.body().getReleaseDate();
                     runtime = response.body().getRuntime();
@@ -129,17 +152,28 @@ public class FragmentInfo extends Fragment {
                     text_view_genre.setText("" + TextUtils.join(", ", listStringGenres));
                     text_view_votes.setText("" + votes + " votes");
 
+                    if(url_image_backdrop_path == null){
+                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
+                                .placeholder(R.drawable.placeholder_item_recycler_view)
+                                .resize(700, 500)
+                                .centerCrop()
+                                .into(imageView_backdrop_path);
+                    }else {
+                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
+                                .placeholder(R.drawable.placeholder_backdrop)
+                                .resize(700, 500)
+                                .into(imageView_backdrop_path);
+                    }
 
-                    Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
-                            .placeholder(R.drawable.placeholder_backdrop)
-                            .resize(700, 500)
-                            .into(imageView_backdrop_path);
                     Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
                             .placeholder(R.drawable.placeholder_item_recycler_view)
                             .resize(170, 180)
                             .into(imageView_poster_path);
 
                     if (listRelatedMovies.size() == 0) {
+                        textView_RelatedMovies.setVisibility(View.GONE);
+                        button_afterRelatedMovies.setVisibility(View.GONE);
+                        gridView.setVisibility(View.GONE);
                         linearLayout.setVisibility(View.GONE);
                     } else {
                         gridView.setAdapter(new GridViewAdapter(getActivity(), listRelatedMovies));

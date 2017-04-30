@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
     tools:context="com.example.moviedb.activity.MainActivity">
+
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
@@ -48,6 +49,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/linearLayout_nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -68,9 +70,21 @@
                     <ImageView
                         android:id="@+id/image_view_posterPath_details"
                         android:layout_width="100dp"
-                        android:focusableInTouchMode="true"
                         android:layout_height="147dp"
+                        android:focusableInTouchMode="true"
                         android:scaleType="fitXY" />
+
+                    <RatingBar
+                        android:id="@+id/rating_bar_info_fragment"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:numStars="5"
+                        android:rating="2.0"
+                        android:stepSize="0.1"
+                        android:theme="@style/RatingBar" />
 
                     <TextView
                         android:id="@+id/text_view_votes_details"
@@ -136,11 +150,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/linear_layout_related_movies"
+                android:layout_below="@+id/linear_layout_related_movies"
                 android:background="@color/color_background_related_movies"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/textView_RelatedMovies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -162,9 +177,10 @@
                 </GridView>
 
                 <Button
+                    android:id="@+id/button_afterRelatedMovies"
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="20dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -172,12 +188,12 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:layout_height="wrap_content"
         android:id="@+id/floatingActionButton_movieDetails"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_videocam_white_24dp"
         android:visibility="invisible"
         app:backgroundTint="@color/color_floating_button"
-        android:src="@drawable/ic_videocam_white_24dp"
         app:layout_anchor="@id/appBar"
         app:layout_anchorGravity="bottom|right" />
 

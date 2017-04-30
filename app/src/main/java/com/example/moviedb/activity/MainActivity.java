@@ -1,5 +1,6 @@
 package com.example.moviedb.activity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -25,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     NavigationView mNavigationView;
     PagerAdapter pagerAdapter;
     AppBarLayout appBarLayout;
-    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
+
 }
 
 

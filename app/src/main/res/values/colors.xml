@@ -15,5 +15,6 @@
     <color name="color_background_related_movies">#f190a198</color>
     <color name="color_floating_button">#f0105a25</color>
     <color name="color_buttor_more_related_movies">#d01f5e3d</color>
+    <color name="yellow">#fffb00</color>
 
 </resources>
