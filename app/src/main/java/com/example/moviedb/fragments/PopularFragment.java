@@ -68,7 +68,7 @@ public class PopularFragment extends Fragment{
                     @Override
                     public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                         list = response.body().getResults();
-                        popularAdapter = new PopularAdapter(getActivity(), list);
+                        popularAdapter = new PopularAdapter(getContext(), list);
                         rv.setLayoutManager(linearLayoutManager);
                         rv.setAdapter(popularAdapter);
                     }

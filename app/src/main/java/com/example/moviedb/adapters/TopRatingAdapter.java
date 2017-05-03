@@ -50,7 +50,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
             FooterViewHolder vh = new FooterViewHolder(v);
             return vh;
         }
-        return new Holder(layoutInflater.inflate(R.layout.item, parent, false));
+        return new Holder(layoutInflater.inflate(R.layout.item_for_recycler_view_standart, parent, false));
     }
 
     public class FooterViewHolder extends Holder {

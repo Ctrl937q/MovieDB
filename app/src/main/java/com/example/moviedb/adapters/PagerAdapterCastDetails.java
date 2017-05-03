@@ -5,16 +5,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.moviedb.fragments.FragmentCast;
-import com.example.moviedb.fragments.FragmentInfo;
-import com.example.moviedb.fragments.FragmentOverView;
+import com.example.moviedb.fragments.FragmentCastBiography;
+import com.example.moviedb.fragments.FragmentInfoCast;
 
-public class PagerAdapterDetails extends FragmentPagerAdapter {
 
-    private String tabTitles[] = new String[]{"Info", "Cast", "Overview"};
+public class PagerAdapterCastDetails extends FragmentPagerAdapter {
+
+    private String tabTitles[] = new String[]{"Info", "Biography"};
     private Context context;
 
-    public PagerAdapterDetails(FragmentManager fm, Context context) {
+    public PagerAdapterCastDetails(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
     }
@@ -28,11 +28,9 @@ public class PagerAdapterDetails extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new FragmentInfo();
+                return new FragmentInfoCast();
             case 1:
-                return new FragmentCast();
-            case 2:
-                return new FragmentOverView();
+                return new FragmentCastBiography();
         }
         return null;
     }

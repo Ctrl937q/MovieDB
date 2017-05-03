@@ -31,16 +31,16 @@ public class UpComingFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab, container, false);
+        View rootView = inflater.inflate(R.layout.tab_upcoming, container, false);
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_first);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_upcoming_movies);
         call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 list = response.body().getResults();
-                upComingAdapter = new UpComingAdapter(getActivity(), list);
+                upComingAdapter = new UpComingAdapter(getContext(), list);
                 rv.setLayoutManager(linearLayoutManager);
                 rv.setAdapter(upComingAdapter);
                 rv.setVisibility(View.VISIBLE);
@@ -60,7 +60,7 @@ public class UpComingFragment extends Fragment {
                     @Override
                     public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                         list = response.body().getResults();
-                        upComingAdapter = new UpComingAdapter(getActivity(), list);
+                        upComingAdapter = new UpComingAdapter(getContext(), list);
                         rv.setLayoutManager(linearLayoutManager);
                         rv.setAdapter(upComingAdapter);
                     }
@@ -70,7 +70,7 @@ public class UpComingFragment extends Fragment {
 
                     }
                 });
-                upComingAdapter = new UpComingAdapter(getActivity(), list);
+                upComingAdapter = new UpComingAdapter(getContext(), list);
                 rv.setAdapter(upComingAdapter);
                 swipeRefreshLayout.setRefreshing(false);
                 swipeRefreshLayout.destroyDrawingCache();

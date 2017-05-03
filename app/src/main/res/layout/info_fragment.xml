@@ -7,7 +7,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.moviedb.activity.MainActivity">
 
-
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
@@ -46,11 +45,15 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background_for_top_info_movie"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/linearLayout_nestedScrollView"
             android:layout_width="match_parent"
+            android:layout_marginLeft="1.5dp"
+            android:layout_marginRight="1.5dp"
+            android:layout_marginBottom="1.5dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
@@ -151,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linear_layout_related_movies"
-                android:background="@color/color_background_related_movies"
+                android:background="@color/background_for_bottom_info_movie"
                 android:orientation="vertical">
 
                 <TextView
@@ -159,6 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:textColor="@color/white"
                     android:layout_marginTop="18dp"
                     android:text="RELATED MOVIES"
                     android:textSize="15sp" />
@@ -172,15 +176,11 @@
                     android:layout_marginTop="15dp"
                     android:horizontalSpacing="5dp"
                     android:numColumns="3"
+                    android:layout_marginBottom="10dp"
                     android:verticalSpacing="5dp">
 
                 </GridView>
 
-                <Button
-                    android:id="@+id/button_afterRelatedMovies"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp" />
             </LinearLayout>
 
         </LinearLayout>

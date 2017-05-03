@@ -47,7 +47,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
             return vh;
         }
 
-        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_for_recycler_view_standart, parent, false);
         NormalViewHolder vh = new NormalViewHolder(v);
         return vh;
     }

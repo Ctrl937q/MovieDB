@@ -58,7 +58,6 @@ public class CastListViewAdapter extends BaseAdapter {
         textViewCastCharacter = (TextView) view.findViewById(R.id.text_view_for_item_list_view_CastCharacter);
         imageView_cast = (ImageView) view.findViewById(R.id.image_view_for_item_list_view_cast);
 
-
         Transformation transformation = new RoundedTransformationBuilder()
                 .build();
 

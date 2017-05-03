@@ -28,6 +28,10 @@
         <activity android:name=".activity.ActivityDetails">
 
         </activity>
+
+        <activity android:name=".activity.ActivityCastDetails">
+
+        </activity>
     </application>
 
 </manifest>

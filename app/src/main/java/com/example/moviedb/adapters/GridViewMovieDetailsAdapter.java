@@ -21,13 +21,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class GridViewAdapter extends BaseAdapter {
+public class GridViewMovieDetailsAdapter extends BaseAdapter {
 
     List<Similar.Result> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
 
-    public GridViewAdapter(Context context, List<Similar.Result> relatedMovies) {
+    public GridViewMovieDetailsAdapter(Context context, List<Similar.Result> relatedMovies) {
         layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.relatedMovies = relatedMovies;

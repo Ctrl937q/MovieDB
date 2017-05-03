@@ -1,42 +1,30 @@
 package com.example.moviedb.fragments;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.ResponseClass;
-import com.example.moviedb.adapters.GridViewAdapter;
+import com.example.moviedb.adapters.GridViewMovieDetailsAdapter;
 import com.example.moviedb.converter.DateConverter;
-import com.example.moviedb.model.Casts;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.MovieDetails;
 import com.example.moviedb.model.ProductionCompany;
 import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,16 +58,11 @@ public class FragmentInfo extends Fragment {
     private ArrayList<String> listStringGenres;
     private GridView gridView;
     private FloatingActionButton floatingActionButton;
-    private ResponseClass responseClass;
-    private Button button_afterRelatedMovies;
-    private LinearLayout linearLayout;
     private RatingBar rating_bar_info_fragment;
-
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.info_fragment, container, false);
-        responseClass = new ResponseClass();
         textView_title = (TextView) rootView.findViewById(R.id.text_view_name_film_details);
         imageView_backdrop_path = (ImageView) rootView.findViewById(R.id.image_view_backprop_details);
         imageView_poster_path = (ImageView) rootView.findViewById(R.id.image_view_posterPath_details);
@@ -93,18 +76,13 @@ public class FragmentInfo extends Fragment {
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment);
         gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
-       // linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_related_movies);
         textView_RelatedMovies = (TextView)rootView.findViewById(R.id.textView_RelatedMovies);
-        button_afterRelatedMovies = (Button)rootView.findViewById(R.id.button_afterRelatedMovies);
         rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
-
 
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
-
-
 
         final int itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
@@ -115,8 +93,6 @@ public class FragmentInfo extends Fragment {
                     double d = response.body().getVoteAverage() / 2;
                     float f = (float)d;
                     rating_bar_info_fragment.setRating(f);
-                    //Drawable progress = rating_bar_info_fragment.getProgressDrawable();
-                    //DrawableCompat.setTint(progress, Color.YELLOW);
                     title = response.body().getTitle();
                     date_release = response.body().getReleaseDate();
                     runtime = response.body().getRuntime();
@@ -128,7 +104,6 @@ public class FragmentInfo extends Fragment {
                     listGenres = response.body().getGenres();
                     votes = response.body().getVoteCount();
                     listRelatedMovies = response.body().getSimilar().getResults();
-
                     textView_title.setText(title);
                     textView_date_release.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy", date_release));
                     textView_runtime.setText("" + runtime + " min");
@@ -172,11 +147,9 @@ public class FragmentInfo extends Fragment {
 
                     if (listRelatedMovies.size() == 0) {
                         textView_RelatedMovies.setVisibility(View.GONE);
-                        button_afterRelatedMovies.setVisibility(View.GONE);
                         gridView.setVisibility(View.GONE);
-                        linearLayout.setVisibility(View.GONE);
                     } else {
-                        gridView.setAdapter(new GridViewAdapter(getActivity(), listRelatedMovies));
+                        gridView.setAdapter(new GridViewMovieDetailsAdapter(getContext(), listRelatedMovies));
                     }
 
                 } catch (NullPointerException | IndexOutOfBoundsException e) {

@@ -36,13 +36,13 @@ public class TopRatedFragment extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_top_rated_movies);
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_third);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarThird);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(getContext());
         call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 list = response.body().getResults();
-                topRatingAdapter = new TopRatingAdapter(getActivity(), list);
+                topRatingAdapter = new TopRatingAdapter(getContext(), list);
                 rv.setLayoutManager(linearLayoutManager);
                 rv.setAdapter(topRatingAdapter);
                 rv.setVisibility(View.VISIBLE);
@@ -62,7 +62,7 @@ public class TopRatedFragment extends Fragment {
                     @Override
                     public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                         list = response.body().getResults();
-                        topRatingAdapter = new TopRatingAdapter(getActivity(), list);
+                        topRatingAdapter = new TopRatingAdapter(getContext(), list);
                         rv.setLayoutManager(linearLayoutManager);
                         rv.setAdapter(topRatingAdapter);
                     }
@@ -72,7 +72,7 @@ public class TopRatedFragment extends Fragment {
 
                     }
                 });
-                topRatingAdapter = new TopRatingAdapter(getActivity(), list);
+                topRatingAdapter = new TopRatingAdapter(getContext(), list);
                 rv.setAdapter(topRatingAdapter);
                 swipeRefreshLayout.setRefreshing(false);
                 swipeRefreshLayout.destroyDrawingCache();

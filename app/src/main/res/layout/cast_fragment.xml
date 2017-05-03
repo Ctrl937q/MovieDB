@@ -14,6 +14,7 @@
     <ListView
         android:id="@+id/list_view_for_cast"
         android:layout_width="match_parent"
+        android:background="@color/background_for_top_info_movie"
         android:visibility="invisible"
         android:layout_height="wrap_content">
 
