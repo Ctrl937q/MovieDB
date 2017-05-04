@@ -52,8 +52,6 @@ public class FragmentCast extends Fragment {
             }
         });
 
-
-
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
         call.enqueue(new Callback<MovieDetails>() {
             @Override

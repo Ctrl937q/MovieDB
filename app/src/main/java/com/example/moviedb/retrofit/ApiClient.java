@@ -21,7 +21,6 @@ public class ApiClient {
                     .build();
         }
 
-
         ApiInterface apiService = retrofit.create(ApiInterface.class);
         return apiService;
     }

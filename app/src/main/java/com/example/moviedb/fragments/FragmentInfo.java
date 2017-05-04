@@ -1,6 +1,9 @@
 package com.example.moviedb.fragments;
 
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -15,6 +18,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
+import com.example.moviedb.activity.ActivityTrailerPreview;
+import com.example.moviedb.activity.ActivityYouTube;
 import com.example.moviedb.adapters.GridViewMovieDetailsAdapter;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.Genre;
@@ -29,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentInfo extends Fragment {
+public class FragmentInfo extends Fragment implements View.OnClickListener{
 
     private String title;
     private String date_release;
@@ -39,6 +44,7 @@ public class FragmentInfo extends Fragment {
     private String production_countries;
     private int runtime;
     private int votes;
+    private int itemId;
     private TextView textView_title;
     private TextView textView_date_release;
     private TextView textView_runtime;
@@ -78,13 +84,14 @@ public class FragmentInfo extends Fragment {
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
         textView_RelatedMovies = (TextView)rootView.findViewById(R.id.textView_RelatedMovies);
         rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
+        floatingActionButton.setOnClickListener(this);
 
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
 
-        final int itemId = getActivity().getIntent().getIntExtra("id", 1);
+        itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
         call.enqueue(new Callback<MovieDetails>() {
             @Override
@@ -168,4 +175,12 @@ public class FragmentInfo extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == floatingActionButton.getId()){
+            Intent intent = new Intent(getContext(), ActivityTrailerPreview.class);
+            intent.putExtra("film_id", itemId);
+            startActivity(intent);
+        }
+    }
 }
