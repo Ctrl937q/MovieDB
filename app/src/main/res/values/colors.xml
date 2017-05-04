@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="gray">#494e4c</color>
+    <color name="gray_next">#b88e9291</color>
     <color name="black">#000</color>
     <color name="theme_color">#9829492a</color>
     <color name="white">#FFF</color>
@@ -19,4 +20,7 @@
     <color name="background_for_top_info_movie">#644a554a</color>
     <color name="background_for_bottom_info_movie">#e59aa79c</color>
     <color name="background_for_bottom_cast_info">#e8848f85</color>
+
+
+
 </resources>

@@ -14,6 +14,8 @@ import com.example.moviedb.adapters.UpComingAdapter;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
+import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +44,7 @@ public class UpComingFragment extends Fragment {
                 list = response.body().getResults();
                 upComingAdapter = new UpComingAdapter(getContext(), list);
                 rv.setLayoutManager(linearLayoutManager);
+                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
                 rv.setAdapter(upComingAdapter);
                 rv.setVisibility(View.VISIBLE);
             }

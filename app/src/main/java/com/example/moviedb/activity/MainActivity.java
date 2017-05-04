@@ -1,80 +1,109 @@
 package com.example.moviedb.activity;
 
-import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moviedb.R;
-import com.example.moviedb.adapters.PagerAdapterStandart;
+import com.example.moviedb.adapters.TopRatingAdapter;
+import com.example.moviedb.fragments.PopularFragment;
+import com.example.moviedb.fragments.TopRatedFragment;
+import com.example.moviedb.fragments.UpComingFragment;
+import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.github.florent37.materialviewpager.header.HeaderDesign;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    DrawerLayout mDrawerLayout;
-    NavigationView mNavigationView;
-    PagerAdapter pagerAdapter;
-    AppBarLayout appBarLayout;
+    private MaterialViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("MovieDB");
+        viewPager = (MaterialViewPager)findViewById(R.id.materialViewPager);
 
+        final Toolbar toolbar = viewPager.getToolbar();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
 
         // progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        mNavigationView = (NavigationView) findViewById(R.id.shitstuff);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-
-        pagerAdapter = new PagerAdapterStandart(getSupportFragmentManager(), MainActivity.this);
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                mDrawerLayout.closeDrawers();
+            public Fragment getItem(int position) {
+                switch (position % 4) {
+                    case 0:
+                        return UpComingFragment.newInstance();
 
-                // if (menuItem.getItemId() == R.id.nav_item_sent) {
-                //     FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+                    case 1:
+                        return PopularFragment.newInstance();
 
-                // }
+                    case 2:
+                        return TopRatedFragment.newInstance();
 
-                //if (menuItem.getItemId() == R.id.nav_item_inbox) {
-                //    FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
+                }
+                return null;
+            }
 
-                //}
+            @Override
+            public int getCount() {
+                return 3;
+            }
 
-                return false;
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position % 4) {
+                    case 0:
+                        return "UpComing";
+                    case 1:
+                        return "Populary";
+                    case 2:
+                        return "Top Rated";
+                }
+                return "";
             }
         });
 
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
-        
+        final Drawable drawable1 = getResources().getDrawable(R.drawable.iron);
+        final Drawable drawable2 = getResources().getDrawable(R.drawable.superman);
+        final Drawable drawable3 = getResources().getDrawable(R.drawable.spider);
+
+        viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+            @Override
+            public HeaderDesign getHeaderDesign(int page) {
+                switch (page) {
+                    case 0:
+                        return HeaderDesign.fromColorResAndDrawable(
+                                R.color.gray, drawable1);
+                    case 1:
+                        return HeaderDesign.fromColorResAndDrawable(
+                                R.color.gray, drawable2);
+                    case 2:
+                        return HeaderDesign.fromColorResAndDrawable(
+                                R.color.gray, drawable3);
+                }
+
+                //execute others actions if needed (ex : modify your header logo)
+
+                return null;
+            }
+        });
+
+        viewPager.getViewPager().setOffscreenPageLimit(viewPager.getViewPager().getAdapter().getCount());
+        viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
+
     }
-
 }
-
-
-

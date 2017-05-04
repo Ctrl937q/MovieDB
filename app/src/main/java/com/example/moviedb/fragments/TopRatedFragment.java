@@ -15,6 +15,8 @@ import com.example.moviedb.adapters.TopRatingAdapter;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
+import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,6 +46,7 @@ public class TopRatedFragment extends Fragment {
                 list = response.body().getResults();
                 topRatingAdapter = new TopRatingAdapter(getContext(), list);
                 rv.setLayoutManager(linearLayoutManager);
+                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
                 rv.setAdapter(topRatingAdapter);
                 rv.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
@@ -79,5 +82,9 @@ public class TopRatedFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public static TopRatedFragment newInstance() {
+        return new TopRatedFragment();
     }
 }

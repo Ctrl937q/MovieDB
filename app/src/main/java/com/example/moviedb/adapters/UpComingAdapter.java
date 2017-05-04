@@ -3,6 +3,7 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,7 +112,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         try {
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                    .resize(140, 170).centerCrop().into(holder.imageView);
+                    .resize(250, 325).centerCrop().into(holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
 
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
