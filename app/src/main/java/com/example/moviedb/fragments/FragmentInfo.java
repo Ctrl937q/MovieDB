@@ -5,17 +5,23 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.activity.ActivityTrailerPreview;
@@ -28,13 +34,15 @@ import com.example.moviedb.model.ProductionCompany;
 import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentInfo extends Fragment implements View.OnClickListener{
+public class FragmentInfo extends Fragment implements View.OnClickListener {
 
     private String title;
     private String date_release;
@@ -65,32 +73,22 @@ public class FragmentInfo extends Fragment implements View.OnClickListener{
     private GridView gridView;
     private FloatingActionButton floatingActionButton;
     private RatingBar rating_bar_info_fragment;
+    private LinearLayout linearLayoutRelated;
+    NestedScrollView nestedScrollView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.info_fragment, container, false);
-        textView_title = (TextView) rootView.findViewById(R.id.text_view_name_film_details);
-        imageView_backdrop_path = (ImageView) rootView.findViewById(R.id.image_view_backprop_details);
-        imageView_poster_path = (ImageView) rootView.findViewById(R.id.image_view_posterPath_details);
-        textView_date_release = (TextView) rootView.findViewById(R.id.text_view_date_film_details);
-        textView_runtime = (TextView) rootView.findViewById(R.id.text_view_duration_film_details);
-        textView_tagline = (TextView) rootView.findViewById(R.id.text_view_tagline_film_details);
-        textView_production_companies = (TextView) rootView.findViewById(R.id.text_view_production_companies);
-        textView_production_countries = (TextView) rootView.findViewById(R.id.text_view_production_countries);
-        text_view_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details);
-        text_view_genre = (TextView) rootView.findViewById(R.id.text_view_genre);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment);
-        gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
-        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
-        textView_RelatedMovies = (TextView)rootView.findViewById(R.id.textView_RelatedMovies);
-        rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
-        floatingActionButton.setOnClickListener(this);
-
+        linearLayoutRelated = (LinearLayout) rootView.findViewById(R.id.linear_layout_related_movies);
+        initializeViewById(rootView);
+        rating_bar_info_fragment.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        //linearLayoutRelated.setVisibility(View.GONE);
+        //nestedScrollView.setVisibility(View.GONE);
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
-
         itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
         call.enqueue(new Callback<MovieDetails>() {
@@ -98,7 +96,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener{
             public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
                 try {
                     double d = response.body().getVoteAverage() / 2;
-                    float f = (float)d;
+                    float f = (float) d;
                     rating_bar_info_fragment.setRating(f);
                     title = response.body().getTitle();
                     date_release = response.body().getReleaseDate();
@@ -134,13 +132,13 @@ public class FragmentInfo extends Fragment implements View.OnClickListener{
                     text_view_genre.setText("" + TextUtils.join(", ", listStringGenres));
                     text_view_votes.setText("" + votes + " votes");
 
-                    if(url_image_backdrop_path == null){
+                    if (url_image_backdrop_path == null) {
                         Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
                                 .placeholder(R.drawable.placeholder_item_recycler_view)
                                 .resize(700, 500)
                                 .centerCrop()
                                 .into(imageView_backdrop_path);
-                    }else {
+                    } else {
                         Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
                                 .placeholder(R.drawable.placeholder_backdrop)
                                 .resize(700, 500)
@@ -163,7 +161,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener{
                     e.printStackTrace();
                 }
                 progressBar.setVisibility(View.INVISIBLE);
-                floatingActionButton.setVisibility(View.VISIBLE);
+                rating_bar_info_fragment.setVisibility(View.VISIBLE);
+                //linearLayoutRelated.setVisibility(View.VISIBLE);
+                nestedScrollView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -171,13 +171,39 @@ public class FragmentInfo extends Fragment implements View.OnClickListener{
 
             }
         });
-
         return rootView;
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    public void initializeViewById(View rootView) {
+        textView_title = (TextView) rootView.findViewById(R.id.text_view_name_film_details);
+        imageView_backdrop_path = (ImageView) rootView.findViewById(R.id.image_view_backprop_details);
+        imageView_poster_path = (ImageView) rootView.findViewById(R.id.image_view_posterPath_details);
+        textView_date_release = (TextView) rootView.findViewById(R.id.text_view_date_film_details);
+        textView_runtime = (TextView) rootView.findViewById(R.id.text_view_duration_film_details);
+        textView_tagline = (TextView) rootView.findViewById(R.id.text_view_tagline_film_details);
+        textView_production_companies = (TextView) rootView.findViewById(R.id.text_view_production_companies);
+        textView_production_countries = (TextView) rootView.findViewById(R.id.text_view_production_countries);
+        text_view_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details);
+        text_view_genre = (TextView) rootView.findViewById(R.id.text_view_genre);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment);
+        gridView = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies);
+        floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
+        textView_RelatedMovies = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
+        rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
+        linearLayoutRelated = (LinearLayout) rootView.findViewById(R.id.linear_layout_info_fragment_bottom);
+        nestedScrollView = (NestedScrollView)rootView.findViewById(R.id.nested_scroll_view_info_fragment);
+        floatingActionButton.setOnClickListener(this);
+
+    }
+
+    @Override
     public void onClick(View v) {
-        if(v.getId() == floatingActionButton.getId()){
+        if (v.getId() == floatingActionButton.getId()) {
             Intent intent = new Intent(getContext(), ActivityTrailerPreview.class);
             intent.putExtra("film_id", itemId);
             startActivity(intent);

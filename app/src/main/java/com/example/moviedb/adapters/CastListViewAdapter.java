@@ -25,9 +25,9 @@ public class CastListViewAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
 
     public CastListViewAdapter(Context context, List<Cast> castsList) {
-        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.castsList = castsList;
+        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override

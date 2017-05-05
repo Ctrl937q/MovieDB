@@ -11,6 +11,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviedb.R;
@@ -18,20 +20,32 @@ import com.example.moviedb.adapters.TopRatingAdapter;
 import com.example.moviedb.fragments.PopularFragment;
 import com.example.moviedb.fragments.TopRatedFragment;
 import com.example.moviedb.fragments.UpComingFragment;
+import com.example.moviedb.internet.TestInternetConnection;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private MaterialViewPager viewPager;
+    Button button;
+    TextView textViewRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        viewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        button = (Button) findViewById(R.id.button);
+        textViewRetry = (TextView)findViewById(R.id.textView_retry_internet);
+        button.setOnClickListener(this);
+        if (!TestInternetConnection.checkConnection(getApplicationContext())) {
+            viewPager.setVisibility(View.GONE);
+            button.setVisibility(View.VISIBLE);
+            textViewRetry.setVisibility(View.VISIBLE);
+        }
+
         setTitle("MovieDB");
-        viewPager = (MaterialViewPager)findViewById(R.id.materialViewPager);
 
         final Toolbar toolbar = viewPager.getToolbar();
         if (toolbar != null) {
@@ -95,9 +109,6 @@ public class MainActivity extends AppCompatActivity {
                         return HeaderDesign.fromColorResAndDrawable(
                                 R.color.gray, drawable3);
                 }
-
-                //execute others actions if needed (ex : modify your header logo)
-
                 return null;
             }
         });
@@ -105,5 +116,18 @@ public class MainActivity extends AppCompatActivity {
         viewPager.getViewPager().setOffscreenPageLimit(viewPager.getViewPager().getAdapter().getCount());
         viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == button.getId()) {
+            if (TestInternetConnection.checkConnection(getApplicationContext())) {
+                viewPager.setVisibility(View.VISIBLE);
+                button.setVisibility(View.GONE);
+                textViewRetry.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(getApplicationContext(), "no internet connection", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

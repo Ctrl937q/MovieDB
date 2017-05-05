@@ -5,6 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="please enable your internet and press retry"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_retry_internet"
+            android:visibility="gone"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:background="@color/white"
+            android:id="@+id/button"
+            android:layout_below="@+id/textView_retry_internet"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:text="retry"
+            android:textColor="@color/black"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
+
     <com.github.florent37.materialviewpager.MaterialViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/materialViewPager"

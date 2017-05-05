@@ -17,6 +17,7 @@ import com.example.moviedb.Const;
 
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
+import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
@@ -64,25 +65,31 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "loading more films...", Toast.LENGTH_SHORT).show();
-                    Call<MovieResponse> call = ApiClient.getClient().getUpcomingMovies(pageNumber, Const.API_KEY);
-                    pageNumber++;
-                    call.enqueue(new Callback<MovieResponse>() {
-                        @Override
-                        public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                            try {
-                                movies.addAll(response.body().getResults());
-                                updateList(movies);
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
+                    if (!TestInternetConnection.checkConnection(context)) {
+                        Toast.makeText(context, "no internet connection", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(context, "loading more films...", Toast.LENGTH_SHORT).show();
+                        Call<MovieResponse> call = ApiClient.getClient().getUpcomingMovies(pageNumber, Const.API_KEY);
+                        pageNumber++;
+                        call.enqueue(new Callback<MovieResponse>() {
+                            @Override
+                            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                                try {
+                                    movies.addAll(response.body().getResults());
+                                    updateList(movies);
+                                } catch (NullPointerException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<MovieResponse> call, Throwable t) {
-                        }
-                    });
+
+                            @Override
+                            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                            }
+                        });
+                    }
                 }
             });
+
         }
     }
 
@@ -109,10 +116,11 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                 context.startActivity(intent);
             }
         });
+
         try {
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                    .resize(250, 325).centerCrop().into(holder.imageView);
+                    .resize(200, 245).into(holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
 
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
