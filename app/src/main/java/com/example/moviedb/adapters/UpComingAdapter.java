@@ -50,17 +50,11 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
     private Context context;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
-    ImageLoader imageLoader;
-    DisplayImageOptions options;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-    private Target mTarget;
 
     public UpComingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-        // initializedOption();
     }
 
     @Override

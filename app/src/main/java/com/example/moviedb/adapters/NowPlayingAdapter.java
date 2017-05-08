@@ -46,16 +46,11 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
     List<Movie> movies;
     private Context context;
     private static final int FOOTER_VIEW = 1;
-    ImageLoader imageLoader;
     int pageNumber;
-    DisplayImageOptions options;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
 
     public NowPlayingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
-        //initializedOption();
         pageNumber = 2;
     }
 
@@ -154,8 +149,8 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
                         .with(context)
                         .load(url)
                         .override(80, 80)
-                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
-                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(false)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
