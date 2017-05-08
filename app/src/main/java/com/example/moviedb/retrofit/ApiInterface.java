@@ -19,6 +19,9 @@ public interface ApiInterface {
     @GET("movie/upcoming?page=")
     Call<MovieResponse> getUpcomingMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
+    @GET("movie/now_playing?page=")
+    Call<MovieResponse> getNowPlayingMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
+
 
 
     @GET("movie/{id}?append_to_response=releases%2Ctrailers%2Ccasts%2Cimages%2Csimilar")

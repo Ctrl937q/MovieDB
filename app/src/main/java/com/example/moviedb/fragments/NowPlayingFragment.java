@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.adapters.TopRatingAdapter;
+import com.example.moviedb.adapters.NowPlayingAdapter;
 import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
@@ -25,32 +25,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TopRatedFragment extends Fragment {
+public class NowPlayingFragment extends Fragment {
 
     List<Movie> list;
     RecyclerView rv;
     ProgressBar progressBar;
-    TopRatingAdapter topRatingAdapter;
+    NowPlayingAdapter nowPlayingAdapter;
     LinearLayoutManager linearLayoutManager;
     SwipeRefreshLayout swipeRefreshLayout;
     Call<MovieResponse> call;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.tab_top_rating, container, false);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_top_rated_movies);
-        rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_third);
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarThird);
+        View rootView = inflater.inflate(R.layout.tab_now_playing, container, false);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_now_playing_movies);
+        rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_fourth);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarFourth);
         linearLayoutManager = new LinearLayoutManager(getContext());
-        call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
+        call = ApiClient.getClient().getNowPlayingMovies(1, Const.API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 list = response.body().getResults();
-                topRatingAdapter = new TopRatingAdapter(getContext(), list);
+                nowPlayingAdapter = new NowPlayingAdapter(getContext(), list);
                 rv.setLayoutManager(linearLayoutManager);
                 rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
-                rv.setAdapter(topRatingAdapter);
+                rv.setAdapter(nowPlayingAdapter);
                 rv.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
             }
@@ -66,14 +66,14 @@ public class TopRatedFragment extends Fragment {
                 if (!TestInternetConnection.checkConnection(getContext())) {
                     Toast.makeText(getContext(), "no internet connection", Toast.LENGTH_SHORT).show();
                 }else {
-                    call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
+                    call = ApiClient.getClient().getNowPlayingMovies(1, Const.API_KEY);
                     call.enqueue(new Callback<MovieResponse>() {
                         @Override
                         public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                             list = response.body().getResults();
-                            topRatingAdapter = new TopRatingAdapter(getContext(), list);
+                            nowPlayingAdapter = new NowPlayingAdapter(getContext(), list);
                             rv.setLayoutManager(linearLayoutManager);
-                            rv.setAdapter(topRatingAdapter);
+                            rv.setAdapter(nowPlayingAdapter);
                         }
 
                         @Override
@@ -82,8 +82,8 @@ public class TopRatedFragment extends Fragment {
                         }
                     });
                 }
-                topRatingAdapter = new TopRatingAdapter(getContext(), list);
-                rv.setAdapter(topRatingAdapter);
+                nowPlayingAdapter = new NowPlayingAdapter(getContext(), list);
+                rv.setAdapter(nowPlayingAdapter);
                 swipeRefreshLayout.setRefreshing(false);
                 swipeRefreshLayout.destroyDrawingCache();
             }
@@ -91,7 +91,7 @@ public class TopRatedFragment extends Fragment {
         return rootView;
     }
 
-    public static TopRatedFragment newInstance() {
-        return new TopRatedFragment();
+    public static NowPlayingFragment newInstance() {
+        return new NowPlayingFragment();
     }
 }

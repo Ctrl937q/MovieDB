@@ -3,7 +3,6 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,11 +30,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.List;
@@ -44,23 +41,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder> {
+public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Holder> {
 
     List<Movie> movies;
     private Context context;
     private static final int FOOTER_VIEW = 1;
-    int pageNumber;
     ImageLoader imageLoader;
+    int pageNumber;
     DisplayImageOptions options;
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
-    private Target mTarget;
 
-    public UpComingAdapter(Context context, List<Movie> movies) {
+    public NowPlayingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
+        //initializedOption();
         pageNumber = 2;
-        // initializedOption();
     }
 
     @Override
@@ -90,7 +86,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                         Toast.makeText(context, "no internet connection", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "loading more films...", Toast.LENGTH_SHORT).show();
-                        Call<MovieResponse> call = ApiClient.getClient().getUpcomingMovies(pageNumber, Const.API_KEY);
+                        Call<MovieResponse> call = ApiClient.getClient().getNowPlayingMovies(pageNumber, Const.API_KEY);
                         pageNumber++;
                         call.enqueue(new Callback<MovieResponse>() {
                             @Override
@@ -139,7 +135,8 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         });
 
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            setImage(Const.IMAGE_POSTER_PATH_URL + movies
+                    .get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
@@ -157,8 +154,8 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                         .with(context)
                         .load(url)
                         .override(80, 80)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(false)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .skipMemoryCache(true)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);

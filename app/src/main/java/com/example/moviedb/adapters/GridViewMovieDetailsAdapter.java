@@ -2,6 +2,7 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +13,23 @@ import android.widget.TextView;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.Similar;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 public class GridViewMovieDetailsAdapter extends BaseAdapter {
@@ -26,6 +37,13 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
     List<Similar.Result> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
+    ImageLoader imageLoader;
+    private final int CacheSize = 52428800; // 50MB
+    private final int MinFreeSpace = 2048; // 2MB
+    private DisplayImageOptions optionsWithFade;
+    private DisplayImageOptions optionsWithoutFade;
+    private DisplayImageOptions backdropOptionsWithFade;
+    private DisplayImageOptions backdropOptionsWithoutFade;
 
     public GridViewMovieDetailsAdapter(Context context, List<Similar.Result> relatedMovies) {
         layoutInflater = LayoutInflater.from(context);
@@ -68,11 +86,37 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
         holder.textViewName.setText(relatedMovies.get(position).getTitle());
         holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                 relatedMovies.get(position).getReleaseDate()));
-        Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + relatedMovies
+
+       /* DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .displayer(new FadeInBitmapDisplayer(500))
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .cacheInMemory(false)
+                .cacheOnDisk(true)
+                .build();
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .defaultDisplayImageOptions(options)
+                .build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
+        long size = 0;
+        File[] filesCache = cacheDir.listFiles();
+        for (File file : filesCache) {
+            size += file.length();
+        }
+        if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+            ImageLoader.getInstance().getDiskCache().clear();
+        }
+        imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath(), holder.imageView);*/
+        Glide.with(context).load(Const.IMAGE_POSTER_PATH_URL + relatedMovies
                 .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                .resize(350, 550)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(false)
+                .override(50, 150)
                 .into(holder.imageView);
-        
+
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,26 +10,26 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:text="please enable your internet and press retry"
-            android:layout_height="wrap_content"
             android:id="@+id/textView_retry_internet"
-            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:text="please enable your internet and press retry"
+            android:visibility="gone" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:background="@color/white"
             android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
             android:layout_below="@+id/textView_retry_internet"
-            android:visibility="gone"
-            android:layout_marginTop="5dp"
-            android:text="retry"
-            android:textColor="@color/black"
-            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginTop="10dp"
+            android:background="@color/dark_green"
+            android:text="retry"
+            android:textColor="@color/white"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -38,8 +38,8 @@
         android:id="@+id/materialViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:viewpager_animatedHeaderImage="true"
         android:background="@color/gray_next"
+        app:viewpager_animatedHeaderImage="true"
         app:viewpager_color="@color/dark_green"
         app:viewpager_disableToolbar="false"
         app:viewpager_displayToolbarWhenSwipe="true"
@@ -47,9 +47,9 @@
         app:viewpager_headerAdditionalHeight="20dp"
         app:viewpager_headerAlpha="1.0"
         app:viewpager_headerHeight="300dp"
-        app:viewpager_imageHeaderDarkLayerAlpha="0.2"
         app:viewpager_hideLogoWithFade="false"
         app:viewpager_hideToolbarAndTitle="true"
+        app:viewpager_imageHeaderDarkLayerAlpha="0.2"
         app:viewpager_logo="@layout/header_logo"
         app:viewpager_logoMarginTop="100dp"
         app:viewpager_pagerTitleStrip="@layout/my_tabs"

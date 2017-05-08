@@ -2,6 +2,7 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.converter.DateConverter;
@@ -19,8 +22,17 @@ import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,14 +44,18 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
     List<Movie> movies;
     private Context context;
     LayoutInflater layoutInflater;
-
+    ImageLoader imageLoader;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
+    DisplayImageOptions options;
+    private final int CacheSize = 52428800; // 50MB
+    private final int MinFreeSpace = 2048; // 2MB
 
     public TopRatingAdapter(Context context, List<Movie> movies) {
         layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.movies = movies;
+      // initializedOption();
         pageNumber = 2;
     }
 
@@ -65,7 +81,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
                 public void onClick(View v) {
                     if (!TestInternetConnection.checkConnection(context)) {
                         Toast.makeText(context, "no internet connection", Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else {
                         Toast.makeText(context, "loading more films...", Toast.LENGTH_SHORT).show();
                         Call<MovieResponse> call = ApiClient.getClient().getTopRatedMovies(pageNumber, Const.API_KEY);
                         pageNumber++;
@@ -103,9 +119,8 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         });
 
         try {
-            Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + movies
-                    .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                    .resize(250, 325).centerCrop().into(holder.imageView);
+            setImage(Const.IMAGE_POSTER_PATH_URL + movies
+                    .get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
@@ -114,6 +129,23 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         }
     }
 
+    public void setImage(final String url, final ImageView imageView) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(url)
+                        .override(80, 80)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView);
+            }
+        });
+        t.run();
+    }
 
     @Override
     public int getItemCount() {

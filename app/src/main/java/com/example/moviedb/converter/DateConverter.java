@@ -16,8 +16,9 @@ public class DateConverter {
         try {
             parsed = df_input.parse(inputDate);
             outputDate = df_output.format(parsed);
-        } catch (ParseException e) {
+        } catch (NullPointerException | ParseException e) {
         }
+
         return outputDate;
     }
 }

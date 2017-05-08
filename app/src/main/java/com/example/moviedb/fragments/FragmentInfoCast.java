@@ -80,7 +80,6 @@ public class FragmentInfoCast extends Fragment {
                     e.printStackTrace();
                 }
                 progressBar.setVisibility(View.INVISIBLE);
-
             }
 
             @Override

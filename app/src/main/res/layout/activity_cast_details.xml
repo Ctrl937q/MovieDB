@@ -44,6 +44,36 @@
         android:layout_width="match_parent"
         android:id="@+id/drawerLayout_cast_details">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView_retry_internet_cast_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                android:text="please enable your internet and press retry"
+                />
+
+            <Button
+                android:id="@+id/button_retry_cast_details"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:layout_below="@+id/textView_retry_internet_cast_details"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@color/dark_green"
+                android:text="retry"
+                android:textColor="@color/white"
+                />
+
+        </RelativeLayout>
+
         <FrameLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

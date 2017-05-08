@@ -12,9 +12,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,15 +25,17 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.activity.ActivityTrailerPreview;
-import com.example.moviedb.activity.ActivityYouTube;
 import com.example.moviedb.adapters.GridViewMovieDetailsAdapter;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.Genre;
 import com.example.moviedb.model.MovieDetails;
 import com.example.moviedb.model.ProductionCompany;
+import com.example.moviedb.model.ProductionCountry;
 import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 import com.squareup.picasso.Picasso;
@@ -49,7 +54,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
     private String url_image_backdrop_path;
     private String url_image_poster_path;
     private String tagline;
-    private String production_countries;
+    private List<ProductionCountry> production_countries;
     private int runtime;
     private int votes;
     private int itemId;
@@ -73,22 +78,21 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
     private GridView gridView;
     private FloatingActionButton floatingActionButton;
     private RatingBar rating_bar_info_fragment;
-    private LinearLayout linearLayoutRelated;
-    NestedScrollView nestedScrollView;
+    private NestedScrollView nestedScrollView;
+    private Button button_retry;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.info_fragment, container, false);
-        linearLayoutRelated = (LinearLayout) rootView.findViewById(R.id.linear_layout_related_movies);
+        Runtime.getRuntime().maxMemory();
         initializeViewById(rootView);
         rating_bar_info_fragment.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
-        //linearLayoutRelated.setVisibility(View.GONE);
-        //nestedScrollView.setVisibility(View.GONE);
         listCompanies = new ArrayList<>();
         listGenres = new ArrayList<>();
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
+        production_countries = new ArrayList<>();
         itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
         call.enqueue(new Callback<MovieDetails>() {
@@ -102,7 +106,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     date_release = response.body().getReleaseDate();
                     runtime = response.body().getRuntime();
                     tagline = response.body().getTagline();
-                    production_countries = response.body().getProductionCountries().get(0).getName();
+                    production_countries = response.body().getProductionCountries();
                     url_image_backdrop_path = response.body().getBackdropPath();
                     url_image_poster_path = response.body().getPosterPath();
                     listCompanies = response.body().getProductionCompanies();
@@ -118,7 +122,13 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     } else {
                         textView_tagline.setText("''" + tagline + "''");
                     }
-                    textView_production_countries.setText("" + production_countries);
+
+                    if(production_countries.size() != 0){
+                        textView_production_countries.setText("" + production_countries.get(0).getName());
+                    }else {
+                        textView_production_countries.setText("");
+                        textView_production_countries.setVisibility(View.GONE);
+                    }
 
                     for (int i = 0; i < listCompanies.size(); i++) {
                         listStringCompany.add(listCompanies.get(i).getName());
@@ -132,22 +142,30 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     text_view_genre.setText("" + TextUtils.join(", ", listStringGenres));
                     text_view_votes.setText("" + votes + " votes");
 
-                    if (url_image_backdrop_path == null) {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
-                                .placeholder(R.drawable.placeholder_item_recycler_view)
-                                .resize(700, 500)
-                                .centerCrop()
-                                .into(imageView_backdrop_path);
-                    } else {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
-                                .placeholder(R.drawable.placeholder_backdrop)
-                                .resize(700, 500)
-                                .into(imageView_backdrop_path);
-                    }
 
-                    Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
+                        if (url_image_backdrop_path == null) {
+                            Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
+                                    .placeholder(R.drawable.placeholder_item_recycler_view)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(false)
+                                    .override(400, 250)
+                                    .centerCrop()
+                                    .into(imageView_backdrop_path);
+                        } else {
+                            Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
+                                    .placeholder(R.drawable.placeholder_backdrop)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(false)
+                                    .override(400, 250)
+                                    .centerCrop()
+                                    .into(imageView_backdrop_path);
+                        }
+
+                    Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
                             .placeholder(R.drawable.placeholder_item_recycler_view)
-                            .resize(170, 180)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(false)
+                            .override(30, 150)
                             .into(imageView_poster_path);
 
                     if (listRelatedMovies.size() == 0) {
@@ -162,8 +180,8 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                 }
                 progressBar.setVisibility(View.INVISIBLE);
                 rating_bar_info_fragment.setVisibility(View.VISIBLE);
-                //linearLayoutRelated.setVisibility(View.VISIBLE);
                 nestedScrollView.setVisibility(View.VISIBLE);
+                floatingActionButton.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -171,7 +189,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
 
             }
         });
+
         return rootView;
+
     }
 
     @Override
@@ -195,10 +215,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
         floatingActionButton = (FloatingActionButton) rootView.findViewById(R.id.floatingActionButton_movieDetails);
         textView_RelatedMovies = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
         rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
-        linearLayoutRelated = (LinearLayout) rootView.findViewById(R.id.linear_layout_info_fragment_bottom);
-        nestedScrollView = (NestedScrollView)rootView.findViewById(R.id.nested_scroll_view_info_fragment);
+        nestedScrollView = (NestedScrollView) rootView.findViewById(R.id.nested_scroll_view_info_fragment);
+        button_retry = (Button) rootView.findViewById(R.id.button_retry_info_fragment);
         floatingActionButton.setOnClickListener(this);
-
     }
 
     @Override

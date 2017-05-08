@@ -8,15 +8,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.UpComingAdapter;
+import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
 
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,25 +58,28 @@ public class UpComingFragment extends Fragment {
             }
         });
 
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
-                call.enqueue(new Callback<MovieResponse>() {
-                    @Override
-                    public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                        list = response.body().getResults();
-                        upComingAdapter = new UpComingAdapter(getContext(), list);
-                        rv.setLayoutManager(linearLayoutManager);
-                        rv.setAdapter(upComingAdapter);
-                    }
+                if (!TestInternetConnection.checkConnection(getContext())) {
+                    Toast.makeText(getContext(), "no internet connection", Toast.LENGTH_SHORT).show();
+                }else {
+                    call = ApiClient.getClient().getUpcomingMovies(1, Const.API_KEY);
+                    call.enqueue(new Callback<MovieResponse>() {
+                        @Override
+                        public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                            list = response.body().getResults();
+                            upComingAdapter = new UpComingAdapter(getContext(), list);
+                            rv.setLayoutManager(linearLayoutManager);
+                            rv.setAdapter(upComingAdapter);
+                        }
 
-                    @Override
-                    public void onFailure(Call<MovieResponse> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<MovieResponse> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }
                 upComingAdapter = new UpComingAdapter(getContext(), list);
                 rv.setAdapter(upComingAdapter);
                 swipeRefreshLayout.setRefreshing(false);

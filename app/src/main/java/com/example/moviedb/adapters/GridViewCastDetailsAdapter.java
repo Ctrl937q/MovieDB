@@ -65,19 +65,22 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
         holder.textViewName.setEllipsize(TextUtils.TruncateAt.END);
         holder.textViewName.setMaxLines(2);
 
-        holder.textViewName.setText(combineCreditsList.get(position).getTitle());
-        if (combineCreditsList.get(position).getFirstAirDate() == null) {
-            holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
-                    combineCreditsList.get(position).getReleaseDate()));
-        } else {
-            holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
-                    combineCreditsList.get(position).getFirstAirDate()));
+        try {
+            holder.textViewName.setText(combineCreditsList.get(position).getTitle());
+            if (combineCreditsList.get(position).getFirstAirDate() == null) {
+                holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
+                        combineCreditsList.get(position).getReleaseDate()));
+            } else {
+                holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
+                        combineCreditsList.get(position).getFirstAirDate()));
+            }
+            Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + combineCreditsList
+                    .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
+                    .resize(350, 550)
+                    .into(holder.imageView);
+        }catch (NullPointerException | IndexOutOfBoundsException e){
+            e.printStackTrace();
         }
-        Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + combineCreditsList
-                .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                .resize(350, 550)
-                .into(holder.imageView);
-
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

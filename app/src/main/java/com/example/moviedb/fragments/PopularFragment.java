@@ -9,10 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.PopularAdapter;
 import com.example.moviedb.adapters.UpComingAdapter;
+import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.Movie;
 import com.example.moviedb.model.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
@@ -43,8 +46,6 @@ public class PopularFragment extends Fragment{
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_second);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarSecond);
         linearLayoutManager = new LinearLayoutManager(getActivity());
-
-
         call = ApiClient.getClient().getPopularyMovies(1, Const.API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -66,21 +67,25 @@ public class PopularFragment extends Fragment{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                call = ApiClient.getClient().getPopularyMovies(1, Const.API_KEY);
-                call.enqueue(new Callback<MovieResponse>() {
-                    @Override
-                    public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                        list = response.body().getResults();
-                        popularAdapter = new PopularAdapter(getContext(), list);
-                        rv.setLayoutManager(linearLayoutManager);
-                        rv.setAdapter(popularAdapter);
-                    }
+                if (!TestInternetConnection.checkConnection(getContext())) {
+                    Toast.makeText(getContext(), "no internet connection", Toast.LENGTH_SHORT).show();
+                }else {
+                    call = ApiClient.getClient().getPopularyMovies(1, Const.API_KEY);
+                    call.enqueue(new Callback<MovieResponse>() {
+                        @Override
+                        public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                            list = response.body().getResults();
+                            popularAdapter = new PopularAdapter(getContext(), list);
+                            rv.setLayoutManager(linearLayoutManager);
+                            rv.setAdapter(popularAdapter);
+                        }
 
-                    @Override
-                    public void onFailure(Call<MovieResponse> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<MovieResponse> call, Throwable t) {
 
-                    }
-                });
+                        }
+                    });
+                }
                 popularAdapter = new PopularAdapter(getActivity(), list);
                 rv.setAdapter(popularAdapter);
                 swipeRefreshLayout.setRefreshing(false);

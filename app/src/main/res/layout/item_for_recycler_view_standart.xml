@@ -17,9 +17,11 @@
 
     <ImageView
         android:id="@+id/image_view_for_item"
-        android:layout_width="95dp"
+        android:layout_width="85dp"
         android:scaleType="fitXY"
-        android:layout_height="125dp" />
+        android:adjustViewBounds="true"
+        android:background="@drawable/placeholder_item_recycler_view"
+        android:layout_height="115dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
