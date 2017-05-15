@@ -42,24 +42,7 @@ public class TopRatedFragment extends Fragment {
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_third);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarThird);
         linearLayoutManager = new LinearLayoutManager(getContext());
-        call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                list = response.body().getResults();
-                topRatingAdapter = new TopRatingAdapter(getContext(), list);
-                rv.setLayoutManager(linearLayoutManager);
-                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
-                rv.setAdapter(topRatingAdapter);
-                rv.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-            }
-        });
-
+        resp();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,6 +72,26 @@ public class TopRatedFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public void resp(){
+        call = ApiClient.getClient().getTopRatedMovies(1, Const.API_KEY);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                list = response.body().getResults();
+                topRatingAdapter = new TopRatingAdapter(getContext(), list);
+                rv.setLayoutManager(linearLayoutManager);
+                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
+                rv.setAdapter(topRatingAdapter);
+                rv.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+            }
+        });
     }
 
     public static TopRatedFragment newInstance() {

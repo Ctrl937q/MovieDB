@@ -20,7 +20,6 @@
     <color name="background_for_top_info_movie">#644a554a</color>
     <color name="background_for_bottom_info_movie">#e59aa79c</color>
     <color name="background_for_bottom_cast_info">#e8848f85</color>
-
-
+    <color name="navigation_view_color">#f7214a27</color>
 
 </resources>

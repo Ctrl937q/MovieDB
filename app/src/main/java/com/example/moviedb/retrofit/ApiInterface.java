@@ -30,4 +30,8 @@ public interface ApiInterface {
     @GET("person/{id}?append_to_response=combined_credits%2Cimages")
     Call<CastDetails>getCastInfo(@Path("id")Integer id, @Query("api_key") String apiKey);
 
+
+    /*@GET("tv?page=")
+    Call<TVResponse>getPopularyTVShow(@Query("page")Integer numberPage, @Query("api_key")String apiKey);*/
+
 }

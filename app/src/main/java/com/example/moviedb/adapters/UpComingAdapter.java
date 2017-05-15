@@ -50,11 +50,18 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
     private Context context;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
+    ImageLoader imageLoader;
+    private final int CacheSize = 52428800; // 50MB
+    private final int MinFreeSpace = 2048; // 2MB
+    ImageLoaderConfiguration config;
+    File cacheDir;
+    DisplayImageOptions options;
 
     public UpComingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
+        //initOptions();
     }
 
     @Override
@@ -132,6 +139,15 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
             }
         });
 
+        /*long size = 0;
+        File[] filesCache = cacheDir.listFiles();
+        for (File file : filesCache) {
+            size += file.length();
+        }
+        if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+            ImageLoader.getInstance().getDiskCache().clear();
+        }*/
+
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
@@ -142,23 +158,40 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         }
     }
 
-
     public void setImage(final String url, final ImageView imageView) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+               /* Picasso.with(context).load(url)
+                        .resize(130, 130).into(imageView);*/
+                //imageLoader.displayImage(url, imageView);
                 Glide
                         .with(context)
                         .load(url)
-                        .override(80, 80)
+                        .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(false)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
             }
         });
         t.run();
+    }
+
+    public void initOptions() {
+        options = new DisplayImageOptions.Builder()
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .cacheInMemory(false)
+                .cacheOnDisk(true)
+                .build();
+        cacheDir = StorageUtils.getCacheDirectory(context);
+        config = new ImageLoaderConfiguration.Builder(context)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .defaultDisplayImageOptions(options)
+                .build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

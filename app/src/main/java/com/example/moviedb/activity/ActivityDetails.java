@@ -1,6 +1,7 @@
 package com.example.moviedb.activity;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -13,11 +14,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.PagerAdapterDetails;
+import com.example.moviedb.fragments.FragmentInfo;
 import com.example.moviedb.internet.TestInternetConnection;
 
 public class ActivityDetails extends AppCompatActivity implements View.OnClickListener {
@@ -28,7 +31,6 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
     CoordinatorLayout coordinatorLayout;
     Button button_retry;
     TextView textView_retry;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,6 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
                 return false;
             }
         });
-
     }
 
     @Override
@@ -93,6 +94,7 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         toolbar.setTitle(title);
+
     }
 
     public void ifInternetOFF() {

@@ -1,6 +1,7 @@
 package com.example.moviedb.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,24 +43,7 @@ public class NowPlayingFragment extends Fragment {
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_view_fourth);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBarFourth);
         linearLayoutManager = new LinearLayoutManager(getContext());
-        call = ApiClient.getClient().getNowPlayingMovies(1, Const.API_KEY);
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                list = response.body().getResults();
-                nowPlayingAdapter = new NowPlayingAdapter(getContext(), list);
-                rv.setLayoutManager(linearLayoutManager);
-                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
-                rv.setAdapter(nowPlayingAdapter);
-                rv.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-            }
-        });
-
+        resp();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -89,6 +73,27 @@ public class NowPlayingFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+
+    public void resp(){
+        call = ApiClient.getClient().getNowPlayingMovies(1, Const.API_KEY);
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                list = response.body().getResults();
+                nowPlayingAdapter = new NowPlayingAdapter(getContext(), list);
+                rv.setLayoutManager(linearLayoutManager);
+                rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
+                rv.setAdapter(nowPlayingAdapter);
+                rv.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+            }
+        });
     }
 
     public static NowPlayingFragment newInstance() {

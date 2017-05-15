@@ -3,6 +3,7 @@ package com.example.moviedb.fragments;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
+import com.example.moviedb.activity.ActivityImage;
 import com.example.moviedb.activity.ActivityTrailerPreview;
 import com.example.moviedb.adapters.GridViewMovieDetailsAdapter;
 import com.example.moviedb.converter.DateConverter;
@@ -38,8 +40,17 @@ import com.example.moviedb.model.ProductionCompany;
 import com.example.moviedb.model.ProductionCountry;
 import com.example.moviedb.model.Similar;
 import com.example.moviedb.retrofit.ApiClient;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +90,24 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
     private FloatingActionButton floatingActionButton;
     private RatingBar rating_bar_info_fragment;
     private NestedScrollView nestedScrollView;
-    private Button button_retry;
+    private ImageLoader imageLoader;
+    private final int CacheSize = 52428800; // 50MB
+    private final int MinFreeSpace = 2048; // 2MB
+
+    DisplayImageOptions optionsBackdrop = new DisplayImageOptions.Builder()
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .cacheInMemory(false)
+            .cacheOnDisk(true)
+            .build();
+
+    DisplayImageOptions optionsPoster = new DisplayImageOptions.Builder()
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .cacheInMemory(false)
+            .cacheOnDisk(true)
+            .build();
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -93,6 +121,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
         listStringCompany = new ArrayList<>();
         listStringGenres = new ArrayList<>();
         production_countries = new ArrayList<>();
+        imageView_backdrop_path.setFocusableInTouchMode(true);
         itemId = getActivity().getIntent().getIntExtra("id", 1);
         Call<MovieDetails> call = ApiClient.getClient().getGenre(itemId, Const.API_KEY);
         call.enqueue(new Callback<MovieDetails>() {
@@ -123,9 +152,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                         textView_tagline.setText("''" + tagline + "''");
                     }
 
-                    if(production_countries.size() != 0){
+                    if (production_countries.size() != 0) {
                         textView_production_countries.setText("" + production_countries.get(0).getName());
-                    }else {
+                    } else {
                         textView_production_countries.setText("");
                         textView_production_countries.setVisibility(View.GONE);
                     }
@@ -142,32 +171,54 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     text_view_genre.setText("" + TextUtils.join(", ", listStringGenres));
                     text_view_votes.setText("" + votes + " votes");
 
+                    File cacheDir = StorageUtils.getCacheDirectory(getActivity());
+                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
+                            .diskCache(new UnlimitedDiskCache(cacheDir))
+                            .defaultDisplayImageOptions(optionsBackdrop)
+                            .build();
+                    ImageLoader.getInstance().init(config);
+                    imageLoader = ImageLoader.getInstance();
+                    long size = 0;
+                    File[] filesCache = cacheDir.listFiles();
+                    for (File file : filesCache) {
+                        size += file.length();
+                    }
+                    if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+                        ImageLoader.getInstance().getDiskCache().clear();
+                    }
 
-                        if (url_image_backdrop_path == null) {
-                            Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
-                                    .placeholder(R.drawable.placeholder_item_recycler_view)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(false)
-                                    .override(400, 250)
-                                    .centerCrop()
-                                    .into(imageView_backdrop_path);
-                        } else {
-                            Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
-                                    .placeholder(R.drawable.placeholder_backdrop)
-                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                    .skipMemoryCache(false)
-                                    .override(400, 250)
-                                    .centerCrop()
-                                    .into(imageView_backdrop_path);
-                        }
+                    ImageSize targetSizePoster = new ImageSize(130, 130);
+                    ImageSize targetSizeBackdrop = new ImageSize(300, 300);
 
-                    Glide.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
-                            .placeholder(R.drawable.placeholder_item_recycler_view)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(false)
-                            .override(30, 150)
-                            .into(imageView_poster_path);
+                    if (url_image_backdrop_path == null) {
+                        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path,
+                                targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                        imageView_backdrop_path.setImageBitmap(loadedImage);
+                                    }
+                                });
+                        //imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path, imageView_backdrop_path);
+                    } else {
+                        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path,
+                                targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
+                                    @Override
+                                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                        imageView_backdrop_path.setImageBitmap(loadedImage);
+                                    }
+                                });
+                        //imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path, imageView_backdrop_path);
+                    }
 
+                    imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path,
+                            targetSizePoster, optionsBackdrop, new SimpleImageLoadingListener() {
+                                @Override
+                                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                    imageView_poster_path.setImageBitmap(loadedImage);
+                                }
+                            });
+
+                    //imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path, imageView_poster_path);
                     if (listRelatedMovies.size() == 0) {
                         textView_RelatedMovies.setVisibility(View.GONE);
                         gridView.setVisibility(View.GONE);
@@ -216,8 +267,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
         textView_RelatedMovies = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
         rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
         nestedScrollView = (NestedScrollView) rootView.findViewById(R.id.nested_scroll_view_info_fragment);
-        button_retry = (Button) rootView.findViewById(R.id.button_retry_info_fragment);
         floatingActionButton.setOnClickListener(this);
+        imageView_backdrop_path.setOnClickListener(this);
+
     }
 
     @Override
@@ -225,6 +277,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
         if (v.getId() == floatingActionButton.getId()) {
             Intent intent = new Intent(getContext(), ActivityTrailerPreview.class);
             intent.putExtra("film_id", itemId);
+            startActivity(intent);
+        } else if (v.getId() == imageView_backdrop_path.getId()) {
+            Intent intent = new Intent(getActivity(), ActivityImage.class);
             startActivity(intent);
         }
     }

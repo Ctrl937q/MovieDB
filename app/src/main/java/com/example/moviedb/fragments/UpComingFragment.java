@@ -1,6 +1,7 @@
 package com.example.moviedb.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -88,6 +89,8 @@ public class UpComingFragment extends Fragment {
         });
         return rootView;
     }
+
+
 
     public static UpComingFragment newInstance() {
         return new UpComingFragment();

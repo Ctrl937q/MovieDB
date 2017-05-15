@@ -28,8 +28,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
 
@@ -47,15 +45,18 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
     private static final int FOOTER_VIEW = 1;
     ImageLoader imageLoader;
     int pageNumber;
-    DisplayImageOptions options;
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
+    ImageLoaderConfiguration config;
+    File cacheDir;
+    DisplayImageOptions options;
+
 
     public PopularAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
-        //initializedOption();
         pageNumber = 2;
+        //initOptions();
     }
 
     @Override
@@ -131,34 +132,66 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
                 context.startActivity(intent);
             }
         });
+
+       /* long size = 0;
+        File[] filesCache = cacheDir.listFiles();
+        for (File file : filesCache) {
+            size += file.length();
+        }
+        if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+            ImageLoader.getInstance().getDiskCache().clear();
+        }*/
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies
-                    .get(position).getPosterPath(), holder.imageView);
+            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
     }
 
     public void setImage(final String url, final ImageView imageView) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+                /*Picasso.with(context).load(url)
+                        .resize(130, 130).into(imageView);*/
+                //imageLoader.displayImage(url, imageView);
+                /*ImageSize targetSize = new ImageSize(120, 120);
+                imageLoader.loadImage(url, targetSize, options, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        imageView.setImageBitmap(loadedImage);
+                    }
+                });*/
                 Glide
                         .with(context)
                         .load(url)
-                        .override(80, 80)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(true)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
             }
         });
         t.run();
+    }
+
+    public void initOptions() {
+        options = new DisplayImageOptions.Builder()
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .cacheInMemory(false)
+                .cacheOnDisk(true)
+                .build();
+        cacheDir = StorageUtils.getCacheDirectory(context);
+        config = new ImageLoaderConfiguration.Builder(context)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .defaultDisplayImageOptions(options)
+                .build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

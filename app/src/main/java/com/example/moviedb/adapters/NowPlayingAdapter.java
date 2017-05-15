@@ -3,6 +3,7 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.List;
@@ -47,11 +49,19 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
     private Context context;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
+    ImageLoader imageLoader;
+    private final int CacheSize = 52428800; // 50MB
+    private final int MinFreeSpace = 2048; // 2MB
+    ImageLoaderConfiguration config;
+    File cacheDir;
+    DisplayImageOptions options;
+
 
     public NowPlayingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
+        //initOptions();
     }
 
     @Override
@@ -129,9 +139,17 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
             }
         });
 
+      /*  long size = 0;
+        File[] filesCache = cacheDir.listFiles();
+        for (File file : filesCache) {
+            size += file.length();
+        }
+        if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+            ImageLoader.getInstance().getDiskCache().clear();
+        }*/
+
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies
-                    .get(position).getPosterPath(), holder.imageView);
+            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
@@ -140,23 +158,40 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
         }
     }
 
-
     public void setImage(final String url, final ImageView imageView) {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
+               /* Picasso.with(context).load(url)
+                        .resize(130, 130).into(imageView);*/
+                // imageLoader.displayImage(url, imageView);
                 Glide
                         .with(context)
                         .load(url)
-                        .override(80, 80)
+                        .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .skipMemoryCache(false)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
             }
         });
         t.run();
+    }
+
+    public void initOptions() {
+        options = new DisplayImageOptions.Builder()
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .cacheInMemory(false)
+                .cacheOnDisk(true)
+                .build();
+        cacheDir = StorageUtils.getCacheDirectory(context);
+        config = new ImageLoaderConfiguration.Builder(context)
+                .diskCache(new UnlimitedDiskCache(cacheDir))
+                .defaultDisplayImageOptions(options)
+                .build();
+        ImageLoader.getInstance().init(config);
+        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

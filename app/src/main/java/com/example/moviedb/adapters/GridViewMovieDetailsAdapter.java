@@ -11,10 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
@@ -25,9 +22,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -40,10 +35,13 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
     ImageLoader imageLoader;
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
-    private DisplayImageOptions optionsWithFade;
-    private DisplayImageOptions optionsWithoutFade;
-    private DisplayImageOptions backdropOptionsWithFade;
-    private DisplayImageOptions backdropOptionsWithoutFade;
+
+    DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .cacheInMemory(false)
+            .cacheOnDisk(true)
+            .build();
 
     public GridViewMovieDetailsAdapter(Context context, List<Similar.Result> relatedMovies) {
         layoutInflater = LayoutInflater.from(context);
@@ -87,13 +85,6 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
         holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                 relatedMovies.get(position).getReleaseDate()));
 
-       /* DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .displayer(new FadeInBitmapDisplayer(500))
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheInMemory(false)
-                .cacheOnDisk(true)
-                .build();
         File cacheDir = StorageUtils.getCacheDirectory(context);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
                 .diskCache(new UnlimitedDiskCache(cacheDir))
@@ -109,13 +100,18 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
         }
-        imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath(), holder.imageView);*/
-        Glide.with(context).load(Const.IMAGE_POSTER_PATH_URL + relatedMovies
-                .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(false)
-                .override(50, 150)
-                .into(holder.imageView);
+
+       /* ImageSize targetSize = new ImageSize(300, 150);
+        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath(),
+                targetSize, options, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        holder.imageView.setImageBitmap(loadedImage);
+                    }
+                });*/
+
+        imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies
+                .get(position).getPosterPath(), holder.imageView);
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override
