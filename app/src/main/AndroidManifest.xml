@@ -46,8 +46,16 @@
 
         </activity>
 
-        <activity android:name=".activity.ActivityImage">
+        <activity android:name=".activity.ActivityImage"
+            android:screenOrientation="portrait">
+        </activity>
 
+        <activity android:name=".activity.ActivityTVShowDetails"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".activity.ActivityCastDetailsTVShow"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

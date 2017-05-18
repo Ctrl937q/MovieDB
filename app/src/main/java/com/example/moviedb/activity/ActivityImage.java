@@ -9,8 +9,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.AdapterForTrailerRecyclerView;
-import com.example.moviedb.model.Images;
-import com.example.moviedb.model.MovieDetails;
+import com.example.moviedb.model.movie.Images;
+import com.example.moviedb.model.movie.MovieDetails;
 import com.example.moviedb.retrofit.ApiClient;
 
 import java.util.ArrayList;

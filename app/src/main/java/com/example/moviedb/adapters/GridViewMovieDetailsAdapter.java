@@ -12,11 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
-import com.example.moviedb.model.Similar;
+import com.example.moviedb.model.movie.Similar;
+import com.example.moviedb.model.tv.details.ResultTV;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +28,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class GridViewMovieDetailsAdapter extends BaseAdapter {
@@ -44,7 +49,6 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
             .build();
 
     public GridViewMovieDetailsAdapter(Context context, List<Similar.Result> relatedMovies) {
-        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.relatedMovies = relatedMovies;
     }
@@ -72,6 +76,7 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Holder holder = new Holder();
         final View rowView;
         rowView = layoutInflater.inflate(R.layout.item_card_for_related_movies, null);
@@ -82,6 +87,20 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
         holder.textViewName.setMaxLines(2);
 
         holder.textViewName.setText(relatedMovies.get(position).getTitle());
+        /*Collections.sort(relatedMovies, new Comparator<ResultTV>() {
+            @Override
+            public int compare(ResultTV o1, ResultTV o2) {
+                return Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o2.getFirstAirDate())) -
+                        Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o1.getFirstAirDate()));
+            }
+        });*/
+        Collections.sort(relatedMovies, new Comparator<Similar.Result>() {
+            @Override
+            public int compare(Similar.Result o1, Similar.Result o2) {
+                return Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o2.getReleaseDate())) -
+                        Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o1.getReleaseDate()));
+            }
+        });
         holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                 relatedMovies.get(position).getReleaseDate()));
 
@@ -110,8 +129,17 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
                     }
                 });*/
 
-        imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies
-                .get(position).getPosterPath(), holder.imageView);
+        Glide
+                .with(context)
+                .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
+                .override(100, 100)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.placeholder_item_recycler_view)
+                .crossFade()
+                .into(holder.imageView);
+
+       /* imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies
+                .get(position).getPosterPath(), holder.imageView);*/
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override

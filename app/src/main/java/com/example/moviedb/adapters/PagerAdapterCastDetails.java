@@ -4,9 +4,10 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
-import com.example.moviedb.fragments.FragmentCastBiography;
-import com.example.moviedb.fragments.FragmentInfoCast;
+import com.example.moviedb.fragments.movie.FragmentCastBiography;
+import com.example.moviedb.fragments.movie.FragmentInfoCast;
 
 
 public class PagerAdapterCastDetails extends FragmentPagerAdapter {
@@ -21,6 +22,7 @@ public class PagerAdapterCastDetails extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
+        Log.d("tag", "pagerAdapterCastDetails");
         return tabTitles.length;
     }
 

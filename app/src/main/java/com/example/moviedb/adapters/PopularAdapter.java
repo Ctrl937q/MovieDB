@@ -20,8 +20,8 @@ import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.R;
 
 import com.example.moviedb.internet.TestInternetConnection;
-import com.example.moviedb.model.Movie;
-import com.example.moviedb.model.MovieResponse;
+import com.example.moviedb.model.movie.Movie;
+import com.example.moviedb.model.movie.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,7 +29,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -50,6 +49,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
     ImageLoaderConfiguration config;
     File cacheDir;
     DisplayImageOptions options;
+    LayoutInflater layoutInflater;
 
 
     public PopularAdapter(Context context, List<Movie> movies) {
@@ -61,6 +61,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         if (viewType == FOOTER_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);

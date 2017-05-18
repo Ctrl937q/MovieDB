@@ -1,9 +1,7 @@
 package com.example.moviedb.adapters;
-
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
-
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
-import com.example.moviedb.model.CombinedCredits;
+import com.example.moviedb.model.movie.CombinedCredits;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class GridViewCastDetailsAdapter extends BaseAdapter {
@@ -28,7 +24,6 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
 
     public GridViewCastDetailsAdapter(Context context, List<CombinedCredits.Cast> combineCreditsList) {
-        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.combineCreditsList = combineCreditsList;
     }
@@ -56,6 +51,7 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Holder holder = new Holder();
         final View rowView;
         rowView = layoutInflater.inflate(R.layout.item_card_for_related_movies, null);
@@ -64,23 +60,21 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
         holder.imageView = (ImageView) rowView.findViewById(R.id.image_view_for_card_view_related_movies);
         holder.textViewName.setEllipsize(TextUtils.TruncateAt.END);
         holder.textViewName.setMaxLines(2);
+        holder.textViewName.setText(combineCreditsList.get(position).getTitle());
 
-        try {
-            holder.textViewName.setText(combineCreditsList.get(position).getTitle());
-            if (combineCreditsList.get(position).getFirstAirDate() == null) {
-                holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
-                        combineCreditsList.get(position).getReleaseDate()));
-            } else {
+            if (combineCreditsList.get(position).getFirstAirDate() != null) {
                 holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                         combineCreditsList.get(position).getFirstAirDate()));
+            } else {
+
+                holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
+                        combineCreditsList.get(position).getReleaseDate()));
             }
             Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + combineCreditsList
                     .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
                     .resize(350, 550)
                     .into(holder.imageView);
-        }catch (NullPointerException | IndexOutOfBoundsException e){
-            e.printStackTrace();
-        }
+
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,5 +88,4 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
         });
         return rowView;
     }
-
 }

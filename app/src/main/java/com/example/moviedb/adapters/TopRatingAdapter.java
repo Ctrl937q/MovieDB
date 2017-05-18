@@ -3,7 +3,6 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,19 +20,15 @@ import com.example.moviedb.Const;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.R;
 import com.example.moviedb.internet.TestInternetConnection;
-import com.example.moviedb.model.Movie;
-import com.example.moviedb.model.MovieResponse;
+import com.example.moviedb.model.movie.Movie;
+import com.example.moviedb.model.movie.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.List;
@@ -50,14 +45,13 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
     ImageLoader imageLoader;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
     ImageLoaderConfiguration config;
     File cacheDir;
     DisplayImageOptions options;
 
     public TopRatingAdapter(Context context, List<Movie> movies) {
-        layoutInflater = LayoutInflater.from(context);
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
@@ -66,6 +60,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         if (viewType == FOOTER_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
@@ -187,11 +182,6 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
 
     @Override
     public int getItemCount() {
-        //try {
-            Log.d("size", " " + movies.size());
-        /*} catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }*/
         return movies.size() + 1;
     }
 

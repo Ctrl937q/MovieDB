@@ -24,7 +24,7 @@
             android:id="@+id/text_view_for_item_list_view_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cast name" />
+            android:text="castTV name" />
 
         <TextView
             android:id="@+id/text_view_for_item_list_view_CastCharacter"

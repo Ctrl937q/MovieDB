@@ -3,9 +3,7 @@ package com.example.moviedb.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,20 +20,15 @@ import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.internet.TestInternetConnection;
-import com.example.moviedb.model.Movie;
-import com.example.moviedb.model.MovieResponse;
+import com.example.moviedb.model.movie.Movie;
+import com.example.moviedb.model.movie.MovieResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.List;
@@ -56,6 +49,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
     ImageLoaderConfiguration config;
     File cacheDir;
     DisplayImageOptions options;
+    LayoutInflater layoutInflater;
 
     public UpComingAdapter(Context context, List<Movie> movies) {
         this.context = context;
@@ -66,6 +60,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
+        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         if (viewType == FOOTER_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);

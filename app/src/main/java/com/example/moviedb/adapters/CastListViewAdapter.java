@@ -2,7 +2,6 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
@@ -16,19 +15,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.converter.CircleTransform;
-import com.example.moviedb.model.Cast;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
+import com.example.moviedb.model.movie.Cast;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.List;
@@ -52,7 +45,6 @@ public class CastListViewAdapter extends BaseAdapter {
     public CastListViewAdapter(Context context, List<Cast> castsList) {
         this.context = context;
         this.castsList = castsList;
-        layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -72,6 +64,7 @@ public class CastListViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = convertView;
         TextView textViewCastName;
         TextView textViewCastCharacter;

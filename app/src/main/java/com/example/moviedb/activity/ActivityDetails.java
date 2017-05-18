@@ -1,10 +1,11 @@
 package com.example.moviedb.activity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -14,14 +15,22 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.PagerAdapterDetails;
-import com.example.moviedb.fragments.FragmentInfo;
+import com.example.moviedb.fragments.movie.FragmentInfo;
+import com.example.moviedb.fragments.movie.NowPlayingFragment;
+import com.example.moviedb.fragments.movie.PopularFragment;
+import com.example.moviedb.fragments.movie.TopRatedFragment;
+import com.example.moviedb.fragments.movie.UpComingFragment;
+import com.example.moviedb.fragments.tv.AiringTodayFragmentTV;
+import com.example.moviedb.fragments.tv.OnTheAirFragmentTV;
+import com.example.moviedb.fragments.tv.PopularFragmentTV;
+import com.example.moviedb.fragments.tv.TopRatedFragmentTV;
 import com.example.moviedb.internet.TestInternetConnection;
+import com.github.florent37.materialviewpager.MaterialViewPager;
 
 public class ActivityDetails extends AppCompatActivity implements View.OnClickListener {
 
@@ -31,6 +40,7 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
     CoordinatorLayout coordinatorLayout;
     Button button_retry;
     TextView textView_retry;
+    private MaterialViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,7 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
         button_retry = (Button) findViewById(R.id.button_retry_activity_details);
         textView_retry = (TextView) findViewById(R.id.textView_retry_internet_activity_details);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff);
+        viewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
         button_retry.setOnClickListener(this);
         if (TestInternetConnection.checkConnection(this)) {
             ifInternetOn();
@@ -50,17 +61,18 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 mDrawerLayout.closeDrawers();
+                if (menuItem.getItemId() == R.id.item_movies) {
+                    Intent intent = new Intent(ActivityDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromMovies", 1);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
 
-                // if (menuItem.getItemId() == R.id.nav_item_sent) {
-                //     FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-
-                // }
-
-                //if (menuItem.getItemId() == R.id.nav_item_inbox) {
-                //    FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-
-                //}
-
+                } else if (menuItem.getItemId() == R.id.item_tv_shows) {
+                    Intent intent = new Intent(ActivityDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromTVShow", "TV_Show");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
                 return false;
             }
         });
@@ -94,7 +106,7 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
         toolbar.setTitle(title);
-
+        FragmentInfo.newInstance();
     }
 
     public void ifInternetOFF() {
@@ -106,6 +118,85 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
         textView_retry.setVisibility(View.VISIBLE);
         Toast.makeText(this, "no internet connection", Toast.LENGTH_SHORT).show();
     }
+
+    public void clickOnMovies(){
+        setTitle("Movies");
+        viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                if (position == 0) {
+                    return UpComingFragment.newInstance();
+                } else if (position == 1) {
+                    return NowPlayingFragment.newInstance();
+                } else if (position == 2) {
+                    return PopularFragment.newInstance();
+                } else if (position == 3) {
+                    return TopRatedFragment.newInstance();
+                }
+                return null;
+            }
+            @Override
+            public int getCount() {
+                return 4;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return "UpComing";
+                    case 1:
+                        return "Now Playing";
+                    case 2:
+                        return "Popular";
+                    case 3:
+                        return "Top Rated";
+                }
+                return "";
+            }
+        });
+        viewPager.getViewPager().setOffscreenPageLimit(4);
+        viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
+    }
+
+    public void clickOnTv() {
+        setTitle("TV shows");
+        viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                if (position == 0) {
+                    return OnTheAirFragmentTV.newInstance();
+                } else if (position == 1) {
+                    return AiringTodayFragmentTV.newInstance();
+                } else if (position == 2) {
+                    return PopularFragmentTV.newInstance();
+                } else if (position == 3) {
+                    return TopRatedFragmentTV.newInstance();
+                }
+                return null;
+            }
+
+            @Override
+            public int getCount() {
+                return 4;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                switch (position) {
+                    case 0:
+                        return "ON THE AIR";
+                    case 1:
+                        return "AIRING TODAY";
+                    case 2:
+                        return "POPULAR";
+                    case 3:
+                        return "TOP RATED";
+                }
+                return "";
+            }
+        });
+        viewPager.getViewPager().setOffscreenPageLimit(4);
+        viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
+    }
 }
-
-

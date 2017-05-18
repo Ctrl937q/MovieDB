@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/color_background"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout_cast_details_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_blue_grey_800"
+            android:id="@+id/toolbar_cast_details_tv"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="MovieDB"
+            app:layout_scrollFlags="scroll|enterAlways" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout_cast_details_tv"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            android:background="@color/material_blue_grey_800"
+            app:tabIndicatorColor="@color/green"
+            app:tabSelectedTextColor="@color/green"
+            app:tabTextColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.design.widget.TabLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/drawerLayout_cast_details_tv">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView_retry_internet_cast_details_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"
+                android:text="please enable your internet and press retry"
+                />
+
+            <Button
+                android:id="@+id/button_retry_cast_details_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:layout_below="@+id/textView_retry_internet_cast_details_tv"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@color/dark_green"
+                android:text="retry"
+                android:textColor="@color/white"
+                />
+
+        </RelativeLayout>
+
+        <FrameLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/containerView_cast_details_tv">
+
+        </FrameLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_cast_details_tv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v4.view.ViewPager>
+
+        <android.support.design.widget.NavigationView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:id="@+id/shitstuff_tv"
+            app:itemTextColor="@color/black"
+            app:menu="@menu/drawermenu"
+            android:layout_marginTop="-24dp" />
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

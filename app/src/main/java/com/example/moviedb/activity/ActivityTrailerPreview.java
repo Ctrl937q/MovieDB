@@ -3,18 +3,14 @@ package com.example.moviedb.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.AdapterForTrailerRecyclerView;
-import com.example.moviedb.model.MovieDetails;
-import com.example.moviedb.model.Trailers;
+import com.example.moviedb.model.movie.MovieDetails;
+import com.example.moviedb.model.movie.Trailers;
 import com.example.moviedb.retrofit.ApiClient;
 
 import java.util.ArrayList;

@@ -1,19 +1,17 @@
 package com.example.moviedb.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.model.Trailers;
+import com.example.moviedb.model.movie.Trailers;
 import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class AdapterForTrailerRecyclerView extends RecyclerView.Adapter<AdapterForTrailerRecyclerView.Holder> {
@@ -24,12 +22,11 @@ public class AdapterForTrailerRecyclerView extends RecyclerView.Adapter<AdapterF
     private Context context;
 
     public AdapterForTrailerRecyclerView(Context context, List<Trailers.Youtube> list) {
-        layoutInflater = LayoutInflater.from(context);
         this.list = list;
         this.context = context;
     }
 
-    public void setOnClickAdapterForTrailerRecyclerView(OnClickAdapterForTrailerRecyclerView onClickAdapterForTrailerRecyclerView){
+    public void setOnClickAdapterForTrailerRecyclerView(OnClickAdapterForTrailerRecyclerView onClickAdapterForTrailerRecyclerView) {
         this.onClickAdapterForTrailerRecyclerView = onClickAdapterForTrailerRecyclerView;
     }
 
@@ -40,7 +37,7 @@ public class AdapterForTrailerRecyclerView extends RecyclerView.Adapter<AdapterF
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
-       // Log.d("wtf", " " + list.get(position).getSource())
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         Picasso.with(context).load(Const.IMAGE_YOUTUBE_TRAILER_URL + list
                 .get(position).getSource() + "/hqdefault.jpg")
                 .resize(300, 240)

@@ -5,9 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.moviedb.fragments.PopularFragment;
-import com.example.moviedb.fragments.TopRatedFragment;
-import com.example.moviedb.fragments.UpComingFragment;
+import com.example.moviedb.fragments.movie.PopularFragment;
+import com.example.moviedb.fragments.movie.TopRatedFragment;
+import com.example.moviedb.fragments.movie.UpComingFragment;
 
 public class PagerAdapterStandart extends FragmentPagerAdapter {
 

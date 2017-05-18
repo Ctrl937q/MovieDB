@@ -1,12 +1,10 @@
 package com.example.moviedb;
 
-import android.util.Log;
-
-import com.example.moviedb.model.Cast;
-import com.example.moviedb.model.Genre;
-import com.example.moviedb.model.MovieDetails;
-import com.example.moviedb.model.ProductionCompany;
-import com.example.moviedb.model.Similar;
+import com.example.moviedb.model.movie.Cast;
+import com.example.moviedb.model.movie.Genre;
+import com.example.moviedb.model.movie.MovieDetails;
+import com.example.moviedb.model.movie.ProductionCompany;
+import com.example.moviedb.model.movie.Similar;
 import com.example.moviedb.retrofit.ApiClient;
 
 import java.util.ArrayList;
