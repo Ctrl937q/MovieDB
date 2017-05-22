@@ -134,7 +134,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
             }
         });
 
-        /*long size = 0;
+ /*       long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
@@ -142,6 +142,12 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
         }*/
+        for (int i = 0; i < movies.size() - 1; i++) {
+            if(movies.get(i).getTitle().equals(movies.get(i + 1))){
+                movies.remove(movies.get(i));
+                updateList(movies);
+            }
+        }
 
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
@@ -157,14 +163,11 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-               /* Picasso.with(context).load(url)
-                        .resize(130, 130).into(imageView);*/
-                //imageLoader.displayImage(url, imageView);
                 Glide
                         .with(context)
                         .load(url)
                         .override(110, 110)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
@@ -173,21 +176,6 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         t.run();
     }
 
-    public void initOptions() {
-        options = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheInMemory(false)
-                .cacheOnDisk(true)
-                .build();
-        cacheDir = StorageUtils.getCacheDirectory(context);
-        config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
-    }
 
     @Override
     public int getItemCount() {

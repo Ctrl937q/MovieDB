@@ -83,6 +83,7 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:layout_marginLeft="1.5dp"
+                android:id="@+id/linear_layout_info_cast_tv_grid_view"
                 android:background="@color/background_for_bottom_cast_info"
                 android:layout_marginRight="1.5dp"
                 android:layout_height="wrap_content">

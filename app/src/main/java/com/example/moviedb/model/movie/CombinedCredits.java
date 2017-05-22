@@ -63,7 +63,17 @@ public class CombinedCredits {
         @SerializedName("first_air_date")
         @Expose
         private String firstAirDate;
+        @SerializedName("original_name")
+        @Expose
+        private String originalName;
 
+        public String getOriginalName() {
+            return originalName;
+        }
+
+        public void setOriginalName(String originalName) {
+            this.originalName = originalName;
+        }
 
         public Boolean getAdult() {
             return adult;

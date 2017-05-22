@@ -2,6 +2,7 @@ package com.example.moviedb.fragments.tv;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -66,6 +68,7 @@ public class FragmentInfoCastTVShow extends Fragment{
                     name = response.body().getName();
                     year = DateConverter.formateDateFromstring("yyyy-MM-dd", "dd.MM.yyy", response.body().getBirthday());
                     imagePath = response.body().getProfilePath();
+
                     textView_name.setText(name);
                     textView_year.setText(year);
                     if (imagePath == null || imagePath.equals("")) {

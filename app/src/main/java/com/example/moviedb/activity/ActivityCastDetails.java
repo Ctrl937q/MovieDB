@@ -52,17 +52,17 @@ public class ActivityCastDetails extends AppCompatActivity implements View.OnCli
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 mDrawerLayout.closeDrawers();
-
-                // if (menuItem.getItemId() == R.id.nav_item_sent) {
-                //     FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-
-                // }
-
-                //if (menuItem.getItemId() == R.id.nav_item_inbox) {
-                //    FragmentTransaction xfragmentTransaction = mFragmentManager.beginTransaction();
-
-                //}
-
+                if (menuItem.getItemId() == R.id.item_movies) {
+                    Intent intent = new Intent(ActivityCastDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromMovies", 1);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else if (menuItem.getItemId() == R.id.item_tv_shows) {
+                    Intent intent = new Intent(ActivityCastDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromTVShow", "TV_Show");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
                 return false;
             }
         });

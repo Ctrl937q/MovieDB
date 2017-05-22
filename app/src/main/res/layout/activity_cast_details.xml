@@ -95,6 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:backgroundTint="@color/navigation_view_color"
             android:id="@+id/shitstuff"
             app:itemTextColor="@color/black"
             app:menu="@menu/drawermenu"

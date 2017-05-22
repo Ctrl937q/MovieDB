@@ -52,7 +52,10 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 6;
+        if(relatedMovies.size() >= 6 ) {
+            return 6;
+        }else
+        return relatedMovies.size();
     }
 
     @Override
@@ -86,6 +89,9 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
         Collections.sort(relatedMovies, new Comparator<ResultTV>() {
             @Override
             public int compare(ResultTV o1, ResultTV o2) {
+                if (o1.getFirstAirDate() == null || o2.getFirstAirDate() == null){
+                    return 0;
+                }
                 return Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o2.getFirstAirDate())) -
                         Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o1.getFirstAirDate()));
             }

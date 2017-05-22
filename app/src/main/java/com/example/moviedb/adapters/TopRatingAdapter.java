@@ -55,7 +55,6 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-        //initOptions();
     }
 
     @Override
@@ -117,7 +116,7 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
                 context.startActivity(intent);
             }
         });
-        /*long size = 0;
+   /*     long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
@@ -125,6 +124,12 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
         }*/
+        for (int i = 0; i < movies.size() - 1; i++) {
+            if(movies.get(i).getTitle().equals(movies.get(i + 1))){
+                movies.remove(movies.get(i));
+                updateList(movies);
+            }
+        }
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
@@ -141,43 +146,17 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                /*Picasso.with(context).load(url)
-                        .resize(130, 130).into(imageView);*/
-                //imageLoader.displayImage(url, imageView);
-                /*ImageSize targetSize = new ImageSize(120, 120);
-                imageLoader.loadImage(url, targetSize, options, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        imageView.setImageBitmap(loadedImage);
-                    }
-                });*/
                 Glide
                         .with(context)
                         .load(url)
                         .override(110, 110)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);
             }
         });
         t.run();
-    }
-
-    public void initOptions() {
-        options = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheInMemory(false)
-                .cacheOnDisk(true)
-                .build();
-        cacheDir = StorageUtils.getCacheDirectory(context);
-        config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
     }
 
     @Override

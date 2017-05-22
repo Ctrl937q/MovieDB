@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +37,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     NavigationView mNavigationView;
     DrawerLayout drawerLayout;
     NowPlayingFragment nowPlayingFragment;
+    Drawable drawable1;
+    Drawable drawable2;
+    Drawable drawable3;
+    Drawable drawable4;
+    Drawable drawable5;
+    Drawable drawable6;
+    Drawable drawable7;
+    Drawable drawable8;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = getIntent();
         String keyFromActivity = intent.getStringExtra("startActivityFromTVShow");
 
+
         if (!TestInternetConnection.checkConnection(getApplicationContext())) {
             viewPager.setVisibility(View.GONE);
             button.setVisibility(View.VISIBLE);
             textViewRetry.setVisibility(View.VISIBLE);
         }
-
-
-            clickOnMovies();
-
-
-
+        clickOnMovies();
 
         final Toolbar toolbar = viewPager.getToolbar();
         if (toolbar != null) {
@@ -87,35 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-
-
-        final Drawable drawable1 = getResources().getDrawable(R.drawable.iron);
-        final Drawable drawable2 = getResources().getDrawable(R.drawable.superman);
-        final Drawable drawable3 = getResources().getDrawable(R.drawable.spider);
-        final Drawable drawable4 = getResources().getDrawable(R.drawable.starwars);
-
-        viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                if (page == 0) {
-                    return HeaderDesign.fromColorResAndDrawable(
-                            R.color.gray, drawable1);
-                } else if (page == 1) {
-                    return HeaderDesign.fromColorResAndDrawable(
-                            R.color.gray, drawable2);
-                } else if (page == 2) {
-                    return HeaderDesign.fromColorResAndDrawable(
-                            R.color.gray, drawable3);
-                } else if (page == 3) {
-                    return HeaderDesign.fromColorResAndDrawable(
-                            R.color.gray, drawable4);
-                }
-                return null;
-            }
-        });
-
-        if(keyFromActivity != null){
-            if(keyFromActivity.equals("TV_Show")) {
+        if (keyFromActivity != null) {
+            if (keyFromActivity.equals("TV_Show")) {
                 clickOnTv();
             }
         }
@@ -135,9 +112,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-    public void clickOnMovies(){
+    public void clickOnMovies() {
         setTitle("Movies");
+        drawable1 = getResources().getDrawable(R.drawable.iron);
+        drawable2 = getResources().getDrawable(R.drawable.superman);
+        drawable3 = getResources().getDrawable(R.drawable.spider);
+        drawable4 = getResources().getDrawable(R.drawable.starwars);
+        viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+            @Override
+            public HeaderDesign getHeaderDesign(int page) {
+                if (page == 0) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable1);
+                } else if (page == 1) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable2);
+                } else if (page == 2) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable3);
+                } else if (page == 3) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable4);
+                }
+                return null;
+            }
+        });
+        viewPager.notifyHeaderChanged();
         viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return null;
             }
+
             @Override
             public int getCount() {
                 return 4;
@@ -174,10 +175,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         viewPager.getViewPager().setOffscreenPageLimit(4);
         viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
-
     }
 
     public void clickOnTv() {
+        final Drawable drawable5 = getResources().getDrawable(R.drawable.flash);
+        final Drawable drawable6 = getResources().getDrawable(R.drawable.game);
+        final Drawable drawable7 = getResources().getDrawable(R.drawable.spartakus);
+        final Drawable drawable8 = getResources().getDrawable(R.drawable.sherlok);
+        viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+            @Override
+            public HeaderDesign getHeaderDesign(int page) {
+                if (page == 0) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable5);
+                } else if (page == 1) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable6);
+                } else if (page == 2) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable7);
+                } else if (page == 3) {
+                    return HeaderDesign.fromColorResAndDrawable(
+                            R.color.gray, drawable8);
+                }
+                return null;
+            }
+        });
+        viewPager.notifyHeaderChanged();
+        
         setTitle("TV shows");
         viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
