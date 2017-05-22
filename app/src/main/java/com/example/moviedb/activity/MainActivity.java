@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Drawable drawable7;
     Drawable drawable8;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button.setOnClickListener(this);
         Intent intent = getIntent();
         String keyFromActivity = intent.getStringExtra("startActivityFromTVShow");
-
 
         if (!TestInternetConnection.checkConnection(getApplicationContext())) {
             viewPager.setVisibility(View.GONE);
@@ -173,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return "";
             }
         });
-        viewPager.getViewPager().setOffscreenPageLimit(4);
+        viewPager.getViewPager().setOffscreenPageLimit(0);
         viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
     }
 
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return "";
             }
         });
-        viewPager.getViewPager().setOffscreenPageLimit(4);
+        viewPager.getViewPager().setOffscreenPageLimit(0);
         viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
     }
 }
