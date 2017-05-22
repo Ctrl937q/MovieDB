@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void clickOnTv() {
-        final Drawable drawable5 = getResources().getDrawable(R.drawable.flash);
-        final Drawable drawable6 = getResources().getDrawable(R.drawable.game);
-        final Drawable drawable7 = getResources().getDrawable(R.drawable.spartakus);
-        final Drawable drawable8 = getResources().getDrawable(R.drawable.sherlok);
+        drawable5 = getResources().getDrawable(R.drawable.flash);
+        drawable6 = getResources().getDrawable(R.drawable.game);
+        drawable7 = getResources().getDrawable(R.drawable.spartakus);
+        drawable8 = getResources().getDrawable(R.drawable.sherlok);
         viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
             @Override
             public HeaderDesign getHeaderDesign(int page) {
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         viewPager.notifyHeaderChanged();
-        
+
         setTitle("TV shows");
         viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
