@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
@@ -24,6 +25,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,16 +36,8 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
     List<ResultTV> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
-    //ImageLoader imageLoader;
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
-
-    DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
 
     public GridViewTVShowDetailsAdapter(Context context, List<ResultTV> relatedMovies) {
         this.context = context;
@@ -52,10 +46,10 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if(relatedMovies.size() >= 6 ) {
+        if (relatedMovies.size() >= 6) {
             return 6;
-        }else
-        return relatedMovies.size();
+        } else
+            return relatedMovies.size();
     }
 
     @Override
@@ -89,7 +83,7 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
         Collections.sort(relatedMovies, new Comparator<ResultTV>() {
             @Override
             public int compare(ResultTV o1, ResultTV o2) {
-                if (o1.getFirstAirDate() == null || o2.getFirstAirDate() == null){
+                if (o1.getFirstAirDate() == null || o2.getFirstAirDate() == null) {
                     return 0;
                 }
                 return Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o2.getFirstAirDate())) -
@@ -99,23 +93,7 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
         holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                 relatedMovies.get(position).getFirstAirDate()));
 
-        Glide
-                .with(context)
-                .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
-                .override(100, 100)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .placeholder(R.drawable.placeholder_item_recycler_view)
-                .crossFade()
-                .into(holder.imageView);
-
-
         File cacheDir = StorageUtils.getCacheDirectory(context);
-        /*ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();*/
-        //ImageLoader.getInstance().init(config);
-        //imageLoader = ImageLoader.getInstance();
         long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
@@ -125,6 +103,20 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
             ImageLoader.getInstance().getDiskCache().clear();
         }
 
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
+                        .override(100, 100)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(holder.imageView);
+            }
+        });
+        t.run();
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override

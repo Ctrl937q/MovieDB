@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
@@ -35,13 +36,6 @@ public class CastListViewTVShowAdapter extends BaseAdapter {
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
 
-    DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
     public CastListViewTVShowAdapter(Context context, List<CastTV> castsList) {
         this.context = context;
         this.castsList = castsList;
@@ -63,7 +57,7 @@ public class CastListViewTVShowAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = convertView;
         TextView textViewCastName;
@@ -77,12 +71,6 @@ public class CastListViewTVShowAdapter extends BaseAdapter {
         imageView_cast = (ImageView) view.findViewById(R.id.image_view_for_item_list_view_cast);
 
         File cacheDir = StorageUtils.getCacheDirectory(context);
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
         long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
@@ -93,34 +81,45 @@ public class CastListViewTVShowAdapter extends BaseAdapter {
         }
 
         if (castsList.get(position).getProfilePath() == null) {
-            Glide.with(context).load(R.drawable.no_image_available)
-                    .asBitmap().centerCrop()
-                    .override(80, 80)
-                    .into(new BitmapImageViewTarget(imageView_cast) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            imageView_cast.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(context).load(R.drawable.no_image_available)
+                            .asBitmap().centerCrop()
+                            .override(80, 80)
+                            .into(new BitmapImageViewTarget(imageView_cast) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    imageView_cast.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
+                }
+            });
+            t.run();
         } else {
-            Glide.with(context).load(Const.IMAGE_POSTER_PATH_URL + castsList
-                    .get(position).getProfilePath())
-                    .asBitmap().centerCrop()
-                    .override(80, 80)
-                    .into(new BitmapImageViewTarget(imageView_cast) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            imageView_cast.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(context).load(Const.IMAGE_POSTER_PATH_URL + castsList
+                            .get(position).getProfilePath())
+                            .asBitmap().centerCrop()
+                            .override(80, 80)
+                            .into(new BitmapImageViewTarget(imageView_cast) {
+                                @Override
+                                protected void setResource(Bitmap resource) {
+                                    RoundedBitmapDrawable circularBitmapDrawable =
+                                            RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    imageView_cast.setImageDrawable(circularBitmapDrawable);
+                                }
+                            });
+                }
+            });
+            t.run();
         }
-
         textViewCastName.setText(castsList.get(position).getName());
         textViewCastCharacter.setText(castsList.get(position).getCharacter());
         return view;

@@ -1,8 +1,6 @@
 package com.example.moviedb.fragments.movie;
 
-
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,12 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.activity.ActivityImage;
 import com.example.moviedb.activity.ActivityTrailerPreview;
 import com.example.moviedb.adapters.GridViewMovieDetailsAdapter;
 import com.example.moviedb.converter.DateConverter;
@@ -32,19 +28,11 @@ import com.example.moviedb.model.movie.ProductionCompany;
 import com.example.moviedb.model.movie.ProductionCountry;
 import com.example.moviedb.model.movie.Similar;
 import com.example.moviedb.retrofit.ApiClient;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

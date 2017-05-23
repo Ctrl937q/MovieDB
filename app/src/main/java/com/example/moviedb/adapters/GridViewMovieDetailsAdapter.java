@@ -48,7 +48,10 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 6;
+        if(relatedMovies.size() >= 6 ) {
+            return 6;
+        }else
+            return relatedMovies.size();
     }
 
     @Override

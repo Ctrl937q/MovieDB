@@ -1,13 +1,10 @@
 package com.example.moviedb.fragments.tv;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +13,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.GridViewTVShowDetailsAdapter;
@@ -26,38 +24,16 @@ import com.example.moviedb.model.tv.details.ProductionCompanyTV;
 import com.example.moviedb.model.tv.details.ResultTV;
 import com.example.moviedb.model.tv.details.TVDetailsResponseTV;
 import com.example.moviedb.retrofit.ApiClient;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FragmentInfoTVShow extends Fragment implements View.OnClickListener {
-
-    DisplayImageOptions optionsBackdrop = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
-    DisplayImageOptions optionsPoster = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
 
     int itemId;
     String url_image_backdrop_path_tv;
@@ -73,10 +49,8 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
     List<String> originalCountry;
     int voteCount;
     double voteAverage;
-
     ImageView imageView_backdrop_path;
     ImageView imageView_poster_path;
-
     TextView textView_name;
     TextView textView_status;
     TextView textView_runtime;
@@ -90,19 +64,16 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
     TextView text_view_genres;
     TextView textView_all_votes;
     TextView textView_RelatedTVShow;
-
     ProgressBar progressBar;
     GridView gridView_tv;
     RatingBar rating_bar_info_fragment_tv;
     NestedScrollView nestedScrollView;
     Call<TVDetailsResponseTV> call;
-
     List<ProductionCompanyTV> productionCompanyList;
     List<GenreTV> genreList;
     List<String> productionCompanyListString;
     List<String> genreListString;
     List<ResultTV> resultTvList;
-
     private final int CacheSize = 52428800;
     private final int MinFreeSpace = 2048;
     private ImageLoader imageLoader;
@@ -143,7 +114,6 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
                 genreList = response.body().getGenreTVs();
                 voteCount = response.body().getVoteCount();
                 voteAverage= response.body().getVoteAverage() / 2;
-                Log.d("poster", " " + url_image_poster_path_tv);
                 resultTvList = response.body().getSimilarTV().getResultTVs();
                 imageLoad();
                 setContent();
@@ -199,11 +169,6 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
 
     public void imageLoad(){
         File cacheDir = StorageUtils.getCacheDirectory(getActivity());
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(optionsBackdrop)
-                .build();
-        ImageLoader.getInstance().init(config);
         imageLoader = ImageLoader.getInstance();
         long size = 0;
         File[] filesCache = cacheDir.listFiles();
@@ -216,33 +181,52 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
     }
 
     public void setImage() {
-        ImageSize targetSizePoster = new ImageSize(130, 130);
-        ImageSize targetSizeBackdrop = new ImageSize(300, 300);
         if (url_image_backdrop_path_tv == null) {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path_tv,
-                    targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView_backdrop_path.setImageBitmap(loadedImage);
-                        }
-                    });
-        } else {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path_tv,
-                    targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView_backdrop_path.setImageBitmap(loadedImage);
-                        }
-                    });
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide
+                            .with(getActivity())
+                            .load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path_tv)
+                            .override(320, 270)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.placeholder_backdrop)
+                            .crossFade()
+                            .into(imageView_backdrop_path);
+                }
+            });
+            t.run();
+        }else {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide
+                            .with(getActivity())
+                            .load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path_tv)
+                            .override(320, 270)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.placeholder_backdrop)
+                            .crossFade()
+                            .into(imageView_backdrop_path);
+                }
+            });
+            t.run();
         }
 
-        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path_tv,
-                targetSizePoster, optionsBackdrop, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        imageView_poster_path.setImageBitmap(loadedImage);
-                    }
-                });
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(getActivity())
+                        .load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path_tv)
+                        .override(80, 80)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView_poster_path);
+            }
+        });
+        t.run();
     }
 
     public void initializeViewById(View rootView) {
@@ -260,7 +244,6 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
         textView_production_company = (TextView) rootView.findViewById(R.id.text_view_companies_tv);
         text_view_genres = (TextView) rootView.findViewById(R.id.text_view_genre_tv);
         textView_all_votes = (TextView) rootView.findViewById(R.id.text_view_votes_details_tv);
-
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_fragment_tv);
         gridView_tv = (GridView) rootView.findViewById(R.id.grid_view_for_related_movies_tv);
         textView_RelatedTVShow = (TextView) rootView.findViewById(R.id.textView_RelatedMovies_tv);
