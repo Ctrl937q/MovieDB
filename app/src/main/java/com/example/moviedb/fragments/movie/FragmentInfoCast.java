@@ -1,5 +1,7 @@
 package com.example.moviedb.fragments.movie;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,14 @@ import com.example.moviedb.converter.DateConverter;
 import com.example.moviedb.model.movie.CastDetails;
 import com.example.moviedb.model.movie.CombinedCredits;
 import com.example.moviedb.retrofit.ApiClient;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.nostra13.universalimageloader.utils.StorageUtils;
 import com.squareup.picasso.Picasso;
 
 import android.support.annotation.Nullable;
@@ -23,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +53,20 @@ public class FragmentInfoCast extends Fragment {
     List<CombinedCredits.Cast> listCredits;
     ProgressBar progressBar;
     TextView textView_knownFor;
+    private ImageLoader imageLoader;
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
+    LinearLayout linearLayout;
+    CoordinatorLayout coordinatorLayout;
+    LinearLayout linearLayoutInfoCast;
+
+    DisplayImageOptions optionsBackdrop = new DisplayImageOptions.Builder()
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .imageScaleType(ImageScaleType.EXACTLY)
+            .cacheInMemory(false)
+            .cacheOnDisk(true)
+            .build();
+
 
     @Nullable
     @Override
@@ -49,10 +74,13 @@ public class FragmentInfoCast extends Fragment {
         final View rootView = inflater.inflate(R.layout.tab_info_cast, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.image_view_cast_info);
         textView_name = (TextView) rootView.findViewById(R.id.text_view_cast_name);
-        textView_year = (TextView)rootView.findViewById(R.id.text_view_cast_year);
+        textView_year = (TextView) rootView.findViewById(R.id.text_view_cast_year);
         gridView = (GridView) rootView.findViewById(R.id.grid_view_for_cast_details);
-        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar_info_cast_fragment);
-        textView_knownFor = (TextView)rootView.findViewById(R.id.textView_RelatedMovies);
+        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_cast_fragment);
+        textView_knownFor = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
+        linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_name_actor);
+        linearLayoutInfoCast = (LinearLayout)rootView.findViewById(R.id.linear_layout_info_cast);
+        coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinator_layout_info_cast);
         final int castId = getActivity().getIntent().getIntExtra("cast_id", 1);
         Call<CastDetails> call = ApiClient.getClient().getCastInfo(castId, Const.API_KEY);
         call.enqueue(new Callback<CastDetails>() {
@@ -74,21 +102,30 @@ public class FragmentInfoCast extends Fragment {
                         gridView.setAdapter(new GridViewCastDetailsAdapter(getContext(), listCredits));
                     }
 
-                    if (imagePath == null || imagePath.equals("")) {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + imagePath)
-                                .placeholder(R.drawable.placeholder_item_recycler_view)
-                                .resize(700, 500)
-                                .centerCrop()
-                                .into(imageView);
-                    } else {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + imagePath)
-                                .placeholder(R.drawable.placeholder_backdrop)
-                                .into(imageView);
+                    File cacheDir = StorageUtils.getCacheDirectory(getActivity());
+                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
+                            .diskCache(new UnlimitedDiskCache(cacheDir))
+                            .defaultDisplayImageOptions(optionsBackdrop)
+                            .build();
+                    ImageLoader.getInstance().init(config);
+                    imageLoader = ImageLoader.getInstance();
+                    long size = 0;
+                    File[] filesCache = cacheDir.listFiles();
+                    for (File file : filesCache) {
+                        size += file.length();
                     }
+                    if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+                        ImageLoader.getInstance().getDiskCache().clear();
+                    }
+                    setImage();
                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
+                linearLayoutInfoCast.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
+                linearLayout.setBackgroundColor(getResources().getColor(R.color.background_for_top_info_movie));
+
             }
 
             @Override
@@ -98,4 +135,32 @@ public class FragmentInfoCast extends Fragment {
         });
         return rootView;
     }
+
+    public void setImage() {
+        ImageSize targetSizeBackdrop = new ImageSize(300, 300);
+        if (imagePath == null || imagePath.equals("")) {
+            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + imagePath,
+                    targetSizeBackdrop, optionsBackdrop, new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            imageView.setImageBitmap(loadedImage);
+                            /*imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
+                            progressBar.setVisibility(View.INVISIBLE);
+                            coordinatorLayout.setVisibility(View.VISIBLE);*/
+                        }
+                    });
+        } else {
+            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + imagePath,
+                    targetSizeBackdrop, optionsBackdrop, new SimpleImageLoadingListener() {
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            imageView.setImageBitmap(loadedImage);
+                            /*imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
+                            progressBar.setVisibility(View.INVISIBLE);
+                            coordinatorLayout.setVisibility(View.VISIBLE);*/
+                        }
+                    });
+        }
+    }
+
 }

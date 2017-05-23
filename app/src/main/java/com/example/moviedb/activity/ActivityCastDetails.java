@@ -54,12 +54,17 @@ public class ActivityCastDetails extends AppCompatActivity implements View.OnCli
                 mDrawerLayout.closeDrawers();
                 if (menuItem.getItemId() == R.id.item_movies) {
                     Intent intent = new Intent(ActivityCastDetails.this, MainActivity.class);
-                    intent.putExtra("startActivityFromMovies", 1);
+                    intent.putExtra("startActivityFromTVShow", "Movies");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 } else if (menuItem.getItemId() == R.id.item_tv_shows) {
                     Intent intent = new Intent(ActivityCastDetails.this, MainActivity.class);
                     intent.putExtra("startActivityFromTVShow", "TV_Show");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else if(menuItem.getItemId() == R.id.item_genres){
+                    Intent intent = new Intent(ActivityCastDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromTVShow", "Genres");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }

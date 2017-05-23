@@ -41,13 +41,6 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
     private final int CacheSize = 52428800; // 50MB
     private final int MinFreeSpace = 2048; // 2MB
 
-    DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
     public GridViewMovieDetailsAdapter(Context context, List<Similar.Result> relatedMovies) {
         this.context = context;
         this.relatedMovies = relatedMovies;
@@ -85,15 +78,7 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
         holder.imageView = (ImageView) rowView.findViewById(R.id.image_view_for_card_view_related_movies);
         holder.textViewName.setEllipsize(TextUtils.TruncateAt.END);
         holder.textViewName.setMaxLines(2);
-
         holder.textViewName.setText(relatedMovies.get(position).getTitle());
-        /*Collections.sort(relatedMovies, new Comparator<ResultTV>() {
-            @Override
-            public int compare(ResultTV o1, ResultTV o2) {
-                return Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o2.getFirstAirDate())) -
-                        Integer.parseInt(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy", o1.getFirstAirDate()));
-            }
-        });*/
         Collections.sort(relatedMovies, new Comparator<Similar.Result>() {
             @Override
             public int compare(Similar.Result o1, Similar.Result o2) {
@@ -105,12 +90,6 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
                 relatedMovies.get(position).getReleaseDate()));
 
         File cacheDir = StorageUtils.getCacheDirectory(context);
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
         long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
@@ -120,27 +99,20 @@ public class GridViewMovieDetailsAdapter extends BaseAdapter {
             ImageLoader.getInstance().getDiskCache().clear();
         }
 
-       /* ImageSize targetSize = new ImageSize(300, 150);
-        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath(),
-                targetSize, options, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        holder.imageView.setImageBitmap(loadedImage);
-                    }
-                });*/
-
-        Glide
-                .with(context)
-                .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
-                .override(100, 100)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .placeholder(R.drawable.placeholder_item_recycler_view)
-                .crossFade()
-                .into(holder.imageView);
-
-       /* imageLoader.displayImage(Const.IMAGE_POSTER_PATH_URL + relatedMovies
-                .get(position).getPosterPath(), holder.imageView);*/
-
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
+                        .override(100, 100)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(holder.imageView);
+            }
+        });
+        t.run();
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

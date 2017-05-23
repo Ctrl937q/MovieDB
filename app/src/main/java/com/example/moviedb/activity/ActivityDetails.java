@@ -12,6 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -63,13 +64,17 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
                 mDrawerLayout.closeDrawers();
                 if (menuItem.getItemId() == R.id.item_movies) {
                     Intent intent = new Intent(ActivityDetails.this, MainActivity.class);
-                    intent.putExtra("startActivityFromMovies", 1);
+                    intent.putExtra("startActivityFromTVShow", "Movies");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-
                 } else if (menuItem.getItemId() == R.id.item_tv_shows) {
                     Intent intent = new Intent(ActivityDetails.this, MainActivity.class);
                     intent.putExtra("startActivityFromTVShow", "TV_Show");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else if(menuItem.getItemId() == R.id.item_genres){
+                    Intent intent = new Intent(ActivityDetails.this, MainActivity.class);
+                    intent.putExtra("startActivityFromTVShow", "Genres");
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
@@ -117,86 +122,5 @@ public class ActivityDetails extends AppCompatActivity implements View.OnClickLi
         button_retry.setVisibility(View.VISIBLE);
         textView_retry.setVisibility(View.VISIBLE);
         Toast.makeText(this, "no internet connection", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clickOnMovies(){
-        setTitle("Movies");
-        viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                if (position == 0) {
-                    return UpComingFragment.newInstance();
-                } else if (position == 1) {
-                    return NowPlayingFragment.newInstance();
-                } else if (position == 2) {
-                    return PopularFragment.newInstance();
-                } else if (position == 3) {
-                    return TopRatedFragment.newInstance();
-                }
-                return null;
-            }
-            @Override
-            public int getCount() {
-                return 4;
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                switch (position) {
-                    case 0:
-                        return "UpComing";
-                    case 1:
-                        return "Now Playing";
-                    case 2:
-                        return "Popular";
-                    case 3:
-                        return "Top Rated";
-                }
-                return "";
-            }
-        });
-        viewPager.getViewPager().setOffscreenPageLimit(4);
-        viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
-    }
-
-    public void clickOnTv() {
-        setTitle("TV shows");
-        viewPager.getViewPager().setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                if (position == 0) {
-                    return OnTheAirFragmentTV.newInstance();
-                } else if (position == 1) {
-                    return AiringTodayFragmentTV.newInstance();
-                } else if (position == 2) {
-                    return PopularFragmentTV.newInstance();
-                } else if (position == 3) {
-                    return TopRatedFragmentTV.newInstance();
-                }
-                return null;
-            }
-
-            @Override
-            public int getCount() {
-                return 4;
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                switch (position) {
-                    case 0:
-                        return "ON THE AIR";
-                    case 1:
-                        return "AIRING TODAY";
-                    case 2:
-                        return "POPULAR";
-                    case 3:
-                        return "TOP RATED";
-                }
-                return "";
-            }
-        });
-        viewPager.getViewPager().setOffscreenPageLimit(4);
-        viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
     }
 }

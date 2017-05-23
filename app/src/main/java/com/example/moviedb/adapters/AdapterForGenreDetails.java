@@ -2,8 +2,8 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,60 +16,53 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
-
-import com.example.moviedb.R;
 import com.example.moviedb.converter.DateConverter;
+import com.example.moviedb.R;
 import com.example.moviedb.internet.TestInternetConnection;
-import com.example.moviedb.model.movie.Movie;
-import com.example.moviedb.model.movie.MovieResponse;
+import com.example.moviedb.model.genre.GenreDetails;
+import com.example.moviedb.model.genre.Result;
 import com.example.moviedb.retrofit.ApiClient;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.utils.StorageUtils;
-
 import java.io.File;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder> {
+public class AdapterForGenreDetails extends RecyclerView.Adapter<AdapterForGenreDetails.Holder> {
 
-    List<Movie> movies;
+    List<Result> movies;
     private Context context;
+    LayoutInflater layoutInflater;
+    ImageLoader imageLoader;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
-    ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
     ImageLoaderConfiguration config;
     File cacheDir;
     DisplayImageOptions options;
-    LayoutInflater layoutInflater;
+    int id;
 
-    public UpComingAdapter(Context context, List<Movie> movies) {
+    public AdapterForGenreDetails(Context context, List<Result> movies, int id) {
         this.context = context;
         this.movies = movies;
+        this.id = id;
         pageNumber = 2;
-        //initOptions();
     }
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         if (viewType == FOOTER_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
             FooterViewHolder vh = new FooterViewHolder(v);
             return vh;
         }
-        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_for_recycler_view_standart, parent, false);
-        NormalViewHolder vh = new NormalViewHolder(v);
-        return vh;
+        return new Holder(layoutInflater.inflate(R.layout.item_for_recycler_view_standart, parent, false));
     }
 
     public class FooterViewHolder extends Holder {
@@ -85,11 +78,11 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                         Toast.makeText(context, "no internet connection", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "loading more films...", Toast.LENGTH_SHORT).show();
-                        Call<MovieResponse> call = ApiClient.getClient().getUpcomingMovies(pageNumber, Const.API_KEY);
+                        Call<GenreDetails> call = ApiClient.getClient().getGenreDetails(id ,pageNumber, Const.API_KEY);
                         pageNumber++;
-                        call.enqueue(new Callback<MovieResponse>() {
+                        call.enqueue(new Callback<GenreDetails>() {
                             @Override
-                            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                            public void onResponse(Call<GenreDetails> call, Response<GenreDetails> response) {
                                 try {
                                     movies.addAll(response.body().getResults());
                                     updateList(movies);
@@ -99,23 +92,10 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                             }
 
                             @Override
-                            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                            public void onFailure(Call<GenreDetails> call, Throwable t) {
                             }
                         });
                     }
-                }
-            });
-
-        }
-    }
-
-    public class NormalViewHolder extends Holder {
-        public NormalViewHolder(View itemView) {
-            super(itemView);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
                 }
             });
         }
@@ -132,8 +112,7 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                 context.startActivity(intent);
             }
         });
-
- /*       long size = 0;
+   /*     long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
@@ -141,13 +120,6 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
         }*/
-        for (int i = 0; i < movies.size() - 1; i++) {
-            if(movies.get(i).getTitle().equals(movies.get(i + 1))){
-                movies.remove(movies.get(i));
-                updateList(movies);
-            }
-        }
-
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
@@ -156,6 +128,8 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
+
+
     }
 
     public void setImage(final String url, final ImageView imageView) {
@@ -175,13 +149,12 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
         t.run();
     }
 
-
     @Override
     public int getItemCount() {
         return movies.size() + 1;
     }
 
-    public void updateList(List<Movie> movies) {
+    public void updateList(List<Result> movies) {
         this.movies = movies;
         notifyDataSetChanged();
     }

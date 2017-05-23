@@ -13,9 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.activity.ActivityImage;
@@ -36,9 +40,11 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,24 +81,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
     private FloatingActionButton floatingActionButton;
     private RatingBar rating_bar_info_fragment;
     private NestedScrollView nestedScrollView;
-    private ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-
-    DisplayImageOptions optionsBackdrop = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
-    DisplayImageOptions optionsPoster = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
+    LinearLayout linearLayoutBot;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,12 +147,6 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     text_view_votes.setText("" + votes + " votes");
 
                     File cacheDir = StorageUtils.getCacheDirectory(getActivity());
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                            .diskCache(new UnlimitedDiskCache(cacheDir))
-                            .defaultDisplayImageOptions(optionsBackdrop)
-                            .build();
-                    ImageLoader.getInstance().init(config);
-                    imageLoader = ImageLoader.getInstance();
                     long size = 0;
                     File[] filesCache = cacheDir.listFiles();
                     for (File file : filesCache) {
@@ -170,9 +155,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                     if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
                         ImageLoader.getInstance().getDiskCache().clear();
                     }
-
                     setImage();
-
                     if (listRelatedMovies.size() == 0) {
                         textView_RelatedMovies.setVisibility(View.GONE);
                         gridView.setVisibility(View.GONE);
@@ -188,6 +171,8 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
                 rating_bar_info_fragment.setVisibility(View.VISIBLE);
                 nestedScrollView.setVisibility(View.VISIBLE);
                 floatingActionButton.setVisibility(View.VISIBLE);
+                imageView_backdrop_path.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
+                linearLayoutBot.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -195,40 +180,32 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
 
             }
         });
-
         return rootView;
-
     }
 
-
     public void setImage() {
-        ImageSize targetSizePoster = new ImageSize(130, 130);
-        ImageSize targetSizeBackdrop = new ImageSize(300, 300);
-        if (url_image_backdrop_path == null) {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path,
-                    targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView_backdrop_path.setImageBitmap(loadedImage);
-                        }
-                    });
-        } else {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path,
-                    targetSizeBackdrop, optionsPoster, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView_backdrop_path.setImageBitmap(loadedImage);
-                        }
-                    });
-        }
-
-        imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path,
-                targetSizePoster, optionsBackdrop, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        imageView_poster_path.setImageBitmap(loadedImage);
-                    }
-                });
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(getActivity())
+                        .load(Const.IMAGE_POSTER_PATH_URL + url_image_backdrop_path)
+                        .override(250, 210)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_backdrop)
+                        .crossFade()
+                        .into(imageView_backdrop_path);
+                Glide
+                        .with(getActivity())
+                        .load(Const.IMAGE_POSTER_PATH_URL + url_image_poster_path)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView_poster_path);
+            }
+        });
+        t.run();
     }
 
 
@@ -249,6 +226,7 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
         textView_RelatedMovies = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
         rating_bar_info_fragment = (RatingBar) rootView.findViewById(R.id.rating_bar_info_fragment);
         nestedScrollView = (NestedScrollView) rootView.findViewById(R.id.nested_scroll_view_info_fragment);
+        linearLayoutBot = (LinearLayout) rootView.findViewById(R.id.linear_layout_info_fragment_bottom);
         floatingActionButton.setOnClickListener(this);
         imageView_backdrop_path.setOnClickListener(this);
     }
@@ -260,8 +238,9 @@ public class FragmentInfo extends Fragment implements View.OnClickListener {
             intent.putExtra("film_id", itemId);
             startActivity(intent);
         } else if (v.getId() == imageView_backdrop_path.getId()) {
-            Intent intent = new Intent(getActivity(), ActivityImage.class);
-            startActivity(intent);
+           /* Intent intent = new Intent(getActivity(), ActivityImage.class);
+            intent.putExtra("film_id", itemId);
+            startActivity(intent);*/
         }
     }
 

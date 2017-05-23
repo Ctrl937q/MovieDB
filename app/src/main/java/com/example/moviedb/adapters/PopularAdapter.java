@@ -48,8 +48,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-
-
         //TODO:
         for (int i = 0; i < movies.size() - 1; i++) {
             if(movies.get(i).getTitle().equals(movies.get(i + 1))){

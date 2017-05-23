@@ -37,7 +37,7 @@
         </activity>
 
         <activity android:name=".activity.ActivityYouTube"
-            android:screenOrientation="portrait">
+            android:screenOrientation="landscape">
 
         </activity>
 
@@ -56,6 +56,15 @@
 
         <activity android:name=".activity.ActivityCastDetailsTVShow"
             android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".activity.ActivityGenres"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".activity.ActivityGenreDetails"
+            android:screenOrientation="portrait">
+
         </activity>
     </application>
 

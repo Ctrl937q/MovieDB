@@ -22,15 +22,12 @@
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
             <ImageView
                 android:id="@+id/image_view_backprop_details"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:background="@drawable/placeholder_backdrop"
+                android:scaleType="fitXY"
                 app:layout_collapseMode="parallax" />
 
             <ProgressBar
@@ -49,21 +46,21 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
-                android:textColor="@color/white"
                 android:layout_marginTop="85dp"
-                android:visibility="gone"
-                android:text="please enable your internet and press retry" />
+                android:text="please enable your internet and press retry"
+                android:textColor="@color/white"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/button_retry_info_fragment"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:background="@color/dark_green"
                 android:layout_gravity="center"
-                android:visibility="gone"
                 android:layout_marginTop="110dp"
+                android:background="@color/dark_green"
                 android:text="retry"
-                android:textSize="10sp" />
+                android:textSize="10sp"
+                android:visibility="gone" />
 
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -102,22 +99,22 @@
                         android:id="@+id/image_view_posterPath_details"
                         android:layout_width="100dp"
                         android:layout_height="147dp"
-                        android:visibility="invisible"
                         android:background="@drawable/placeholder_item_recycler_view"
-                        android:scaleType="fitXY" />
+                        android:scaleType="fitXY"
+                        android:visibility="invisible" />
 
                     <RatingBar
                         android:id="@+id/rating_bar_info_fragment"
                         style="@style/Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
-                        android:visibility="invisible"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:numStars="5"
                         android:rating="2.0"
                         android:stepSize="0.1"
-                        android:theme="@style/RatingBar" />
+                        android:theme="@style/RatingBar"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/text_view_votes_details"
@@ -184,6 +181,7 @@
                 android:id="@+id/linear_layout_info_fragment_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_below="@+id/linear_layout_related_movies"
                 android:background="@color/background_for_bottom_info_movie"
                 android:orientation="vertical">

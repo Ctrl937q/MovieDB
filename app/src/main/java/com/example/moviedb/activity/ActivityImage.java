@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
@@ -40,6 +41,7 @@ public class ActivityImage extends AppCompatActivity{
         call.enqueue(new Callback<MovieDetails>() {
             @Override
             public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+                Log.d("imageIM", " " + response.body().getImages());
             }
 
             @Override

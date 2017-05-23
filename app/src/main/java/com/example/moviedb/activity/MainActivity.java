@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.moviedb.R;
 import com.example.moviedb.fragments.tv.AiringTodayFragmentTV;
 import com.example.moviedb.fragments.movie.NowPlayingFragment;
@@ -45,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Drawable drawable6;
     Drawable drawable7;
     Drawable drawable8;
+    Drawable drawable9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clickOnMovies();
                 } else if (menuItem.getItemId() == R.id.item_tv_shows) {
                     clickOnTv();
+                }else  if(menuItem.getItemId() == R.id.item_genres){
+                    clickOnGenres();
                 }
                 return false;
             }
@@ -92,6 +94,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (keyFromActivity != null) {
             if (keyFromActivity.equals("TV_Show")) {
                 clickOnTv();
+            }else if(keyFromActivity.equals("Movies")){
+                clickOnMovies();
+            }else if(keyFromActivity.equals("Genres")){
+                clickOnGenres();
             }
         }
     }
@@ -108,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
 
     public void clickOnMovies() {
         setTitle("Movies");
@@ -239,5 +244,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         viewPager.getViewPager().setOffscreenPageLimit(0);
         viewPager.getPagerTitleStrip().setViewPager(viewPager.getViewPager());
+    }
+
+    public void clickOnGenres() {
+        setTitle("Genres");
+        Intent intent = new Intent(MainActivity.this, ActivityGenres.class);
+        startActivity(intent);
     }
 }

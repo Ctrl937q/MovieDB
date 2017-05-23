@@ -6,12 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.model.movie.Trailers;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class AdapterForTrailerRecyclerView extends RecyclerView.Adapter<AdapterForTrailerRecyclerView.Holder> {
@@ -24,6 +22,7 @@ public class AdapterForTrailerRecyclerView extends RecyclerView.Adapter<AdapterF
     public AdapterForTrailerRecyclerView(Context context, List<Trailers.Youtube> list) {
         this.list = list;
         this.context = context;
+        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public void setOnClickAdapterForTrailerRecyclerView(OnClickAdapterForTrailerRecyclerView onClickAdapterForTrailerRecyclerView) {
