@@ -47,9 +47,6 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
     int pageNumber;
     private final int CacheSize = 52428800;
     private final int MinFreeSpace = 2048;
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
 
     public TopRatingAdapter(Context context, List<Movie> movies) {
         this.context = context;
@@ -116,14 +113,16 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
                 context.startActivity(intent);
             }
         });
-   /*     long size = 0;
+
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
         for (int i = 0; i < movies.size() - 1; i++) {
             if(movies.get(i).getTitle().equals(movies.get(i + 1))){
                 movies.remove(movies.get(i));

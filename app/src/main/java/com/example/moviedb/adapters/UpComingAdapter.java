@@ -44,18 +44,14 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
     ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
     LayoutInflater layoutInflater;
 
     public UpComingAdapter(Context context, List<Movie> movies) {
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-        //initOptions();
     }
 
     @Override
@@ -132,15 +128,15 @@ public class UpComingAdapter extends RecyclerView.Adapter<UpComingAdapter.Holder
                 context.startActivity(intent);
             }
         });
-
- /*       long size = 0;
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
         for (int i = 0; i < movies.size() - 1; i++) {
             if(movies.get(i).getTitle().equals(movies.get(i + 1))){
                 movies.remove(movies.get(i));

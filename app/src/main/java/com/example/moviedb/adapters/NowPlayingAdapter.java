@@ -43,13 +43,8 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
     private Context context;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
-    ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
-
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
 
     public NowPlayingAdapter(Context context, List<Movie> movies) {
         this.context = context;
@@ -138,15 +133,15 @@ public class NowPlayingAdapter extends RecyclerView.Adapter<NowPlayingAdapter.Ho
                 updateList(movies);
             }
         }
-
-      /*  long size = 0;
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
 
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);

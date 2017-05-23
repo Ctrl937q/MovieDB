@@ -36,8 +36,8 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
     List<ResultTV> relatedMovies;
     private Context context;
     LayoutInflater layoutInflater;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
 
     public GridViewTVShowDetailsAdapter(Context context, List<ResultTV> relatedMovies) {
         this.context = context;
@@ -110,7 +110,7 @@ public class GridViewTVShowDetailsAdapter extends BaseAdapter {
                         .with(context)
                         .load(Const.IMAGE_POSTER_PATH_URL + relatedMovies.get(position).getPosterPath())
                         .override(100, 100)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(holder.imageView);

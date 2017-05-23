@@ -25,6 +25,8 @@ import com.example.moviedb.retrofit.ApiClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.List;
 import retrofit2.Call;
@@ -41,9 +43,6 @@ public class AdapterForGenreDetails extends RecyclerView.Adapter<AdapterForGenre
     int pageNumber;
     private final int CacheSize = 52428800;
     private final int MinFreeSpace = 2048;
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
     int id;
 
     public AdapterForGenreDetails(Context context, List<Result> movies, int id) {
@@ -112,14 +111,15 @@ public class AdapterForGenreDetails extends RecyclerView.Adapter<AdapterForGenre
                 context.startActivity(intent);
             }
         });
-   /*     long size = 0;
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getTitle());
@@ -128,8 +128,6 @@ public class AdapterForGenreDetails extends RecyclerView.Adapter<AdapterForGenre
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void setImage(final String url, final ImageView imageView) {

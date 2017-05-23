@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.activity.ActivityDetails;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
@@ -27,14 +29,10 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
     List<CombinedCredits.Cast> combineCreditsList;
     private Context context;
     LayoutInflater layoutInflater;
-    //GridView gridView;
-    //ViewGroup.LayoutParams layoutParams = gridView.getLayoutParams();
-
 
     public GridViewCastDetailsAdapter(Context context, List<CombinedCredits.Cast> combineCreditsList) {
         this.context = context;
         this.combineCreditsList = combineCreditsList;
-        //this.gridView = gridView;
     }
 
     @Override
@@ -42,8 +40,6 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
         if (combineCreditsList.size() >= 6) {
             return 6;
         } else {
-           /* gridView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));*/
             return combineCreditsList.size();
         }
     }
@@ -90,10 +86,21 @@ public class GridViewCastDetailsAdapter extends BaseAdapter {
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "yyyy",
                     combineCreditsList.get(position).getReleaseDate()));
         }
-        Picasso.with(context).load(Const.IMAGE_POSTER_PATH_URL + combineCreditsList
-                .get(position).getPosterPath()).placeholder(R.drawable.placeholder_item_recycler_view)
-                .resize(350, 550)
-                .into(holder.imageView);
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(Const.IMAGE_POSTER_PATH_URL + combineCreditsList.get(position).getPosterPath())
+                        .override(100, 100)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(holder.imageView);
+            }
+        });
+        t.run();
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override

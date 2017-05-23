@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.GridViewCastDetailsAdapter;
@@ -68,19 +70,40 @@ public class FragmentInfoCastTVShow extends Fragment{
                     name = response.body().getName();
                     year = DateConverter.formateDateFromstring("yyyy-MM-dd", "dd.MM.yyy", response.body().getBirthday());
                     imagePath = response.body().getProfilePath();
-
                     textView_name.setText(name);
                     textView_year.setText(year);
+
                     if (imagePath == null || imagePath.equals("")) {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + imagePath)
-                                .placeholder(R.drawable.placeholder_item_recycler_view)
-                                .resize(700, 500)
-                                .centerCrop()
-                                .into(imageView);
-                    } else {
-                        Picasso.with(getActivity()).load(Const.IMAGE_POSTER_PATH_URL + imagePath)
-                                .placeholder(R.drawable.placeholder_backdrop)
-                                .into(imageView);
+                        Thread t = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide
+                                        .with(getActivity())
+                                        .load(Const.IMAGE_POSTER_PATH_URL + imagePath)
+                                        .override(270, 210)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .placeholder(R.drawable.placeholder_backdrop)
+                                        .crossFade()
+                                        .into(imageView);
+                            }
+                        });
+                        t.run();
+                    }else {
+                        Thread t = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide
+                                        .with(getActivity())
+                                        .load(Const.IMAGE_POSTER_PATH_URL + imagePath)
+                                        .override(300, 240)
+                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                        .placeholder(R.drawable.placeholder_backdrop)
+                                        .crossFade()
+                                        .into(imageView);
+                            }
+                        });
+                        t.run();
+
                     }
                 } catch (NullPointerException | IndexOutOfBoundsException e) {
                     e.printStackTrace();

@@ -23,6 +23,8 @@ import com.example.moviedb.retrofit.ApiClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.List;
 import retrofit2.Call;
@@ -36,11 +38,8 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
     private static final int FOOTER_VIEW = 1;
     ImageLoader imageLoader;
     int pageNumber;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
     LayoutInflater layoutInflater;
 
 
@@ -48,14 +47,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-        //TODO:
-        for (int i = 0; i < movies.size() - 1; i++) {
-            if(movies.get(i).getTitle().equals(movies.get(i + 1))){
-                movies.remove(movies.get(i));
-                updateList(movies);
-
-            }
-        }
     }
 
     @Override
@@ -132,15 +123,15 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularAdapter.Holder> 
                 context.startActivity(intent);
             }
         });
-
-/*        long size = 0;
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
 
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);

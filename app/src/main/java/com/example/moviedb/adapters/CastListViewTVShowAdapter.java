@@ -33,8 +33,8 @@ public class CastListViewTVShowAdapter extends BaseAdapter {
     List<CastTV> castsList;
     LayoutInflater layoutInflater;
     ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
 
     public CastListViewTVShowAdapter(Context context, List<CastTV> castsList) {
         this.context = context;

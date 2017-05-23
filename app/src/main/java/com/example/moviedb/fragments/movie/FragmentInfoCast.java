@@ -1,14 +1,14 @@
 package com.example.moviedb.fragments.movie;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.GridViewCastDetailsAdapter;
@@ -53,20 +53,11 @@ public class FragmentInfoCast extends Fragment {
     List<CombinedCredits.Cast> listCredits;
     ProgressBar progressBar;
     TextView textView_knownFor;
-    private ImageLoader imageLoader;
     private final int CacheSize = 52428800;
     private final int MinFreeSpace = 2048;
     LinearLayout linearLayout;
     CoordinatorLayout coordinatorLayout;
     LinearLayout linearLayoutInfoCast;
-
-    DisplayImageOptions optionsBackdrop = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
-
 
     @Nullable
     @Override
@@ -79,7 +70,7 @@ public class FragmentInfoCast extends Fragment {
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_info_cast_fragment);
         textView_knownFor = (TextView) rootView.findViewById(R.id.textView_RelatedMovies);
         linearLayout = (LinearLayout) rootView.findViewById(R.id.linear_layout_name_actor);
-        linearLayoutInfoCast = (LinearLayout)rootView.findViewById(R.id.linear_layout_info_cast);
+        linearLayoutInfoCast = (LinearLayout) rootView.findViewById(R.id.linear_layout_info_cast);
         coordinatorLayout = (CoordinatorLayout) rootView.findViewById(R.id.coordinator_layout_info_cast);
         final int castId = getActivity().getIntent().getIntExtra("cast_id", 1);
         Call<CastDetails> call = ApiClient.getClient().getCastInfo(castId, Const.API_KEY);
@@ -103,12 +94,6 @@ public class FragmentInfoCast extends Fragment {
                     }
 
                     File cacheDir = StorageUtils.getCacheDirectory(getActivity());
-                    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getActivity())
-                            .diskCache(new UnlimitedDiskCache(cacheDir))
-                            .defaultDisplayImageOptions(optionsBackdrop)
-                            .build();
-                    ImageLoader.getInstance().init(config);
-                    imageLoader = ImageLoader.getInstance();
                     long size = 0;
                     File[] filesCache = cacheDir.listFiles();
                     for (File file : filesCache) {
@@ -125,7 +110,6 @@ public class FragmentInfoCast extends Fragment {
                 progressBar.setVisibility(View.INVISIBLE);
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
                 linearLayout.setBackgroundColor(getResources().getColor(R.color.background_for_top_info_movie));
-
             }
 
             @Override
@@ -137,30 +121,32 @@ public class FragmentInfoCast extends Fragment {
     }
 
     public void setImage() {
-        ImageSize targetSizeBackdrop = new ImageSize(300, 300);
-        if (imagePath == null || imagePath.equals("")) {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + imagePath,
-                    targetSizeBackdrop, optionsBackdrop, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView.setImageBitmap(loadedImage);
-                            /*imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
-                            progressBar.setVisibility(View.INVISIBLE);
-                            coordinatorLayout.setVisibility(View.VISIBLE);*/
-                        }
-                    });
-        } else {
-            imageLoader.loadImage(Const.IMAGE_POSTER_PATH_URL + imagePath,
-                    targetSizeBackdrop, optionsBackdrop, new SimpleImageLoadingListener() {
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageView.setImageBitmap(loadedImage);
-                            /*imageView.setImageDrawable(getResources().getDrawable(R.drawable.placeholder_backdrop));
-                            progressBar.setVisibility(View.INVISIBLE);
-                            coordinatorLayout.setVisibility(View.VISIBLE);*/
-                        }
-                    });
-        }
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (imagePath == null || imagePath.equals("")) {
+                    Glide
+                            .with(getActivity())
+                            .load(Const.IMAGE_POSTER_PATH_URL + imagePath)
+                            .override(270, 210)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.placeholder_backdrop)
+                            .crossFade()
+                            .into(imageView);
+                } else {
+                    Glide
+                            .with(getActivity())
+                            .load(Const.IMAGE_POSTER_PATH_URL + imagePath)
+                            .override(270, 210)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.drawable.placeholder_backdrop)
+                            .crossFade()
+                            .into(imageView);
+                }
+
+            }
+        });
+        t.run();
     }
 
 }

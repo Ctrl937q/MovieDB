@@ -2,9 +2,7 @@ package com.example.moviedb.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
@@ -23,12 +20,9 @@ import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.tv.standart.TVResponse;
 import com.example.moviedb.model.tv.standart.TVResult;
 import com.example.moviedb.retrofit.ApiClient;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.List;
 import retrofit2.Call;
@@ -43,17 +37,13 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
     ImageLoader imageLoader;
     private static final int FOOTER_VIEW = 1;
     int pageNumber;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-    ImageLoaderConfiguration config;
-    File cacheDir;
-    DisplayImageOptions options;
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
 
     public TopRatedTVShowAdapter(Context context, List<TVResult> movies) {
         this.context = context;
         this.movies = movies;
         pageNumber = 2;
-        //initOptions();
     }
 
     @Override
@@ -106,8 +96,6 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
-
-        //TODO: onClick
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,17 +105,15 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
                 context.startActivity(intent);
             }
         });
-
-
-
-        /*long size = 0;
+        File cacheDir = StorageUtils.getCacheDirectory(context);
+        long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
             size += file.length();
         }
         if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
             ImageLoader.getInstance().getDiskCache().clear();
-        }*/
+        }
         try {
             setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
             holder.textViewName.setText(movies.get(position).getName());
@@ -144,16 +130,6 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                /*Picasso.with(context).load(url)
-                        .resize(130, 130).into(imageView);*/
-                //imageLoader.displayImage(url, imageView);
-                /*ImageSize targetSize = new ImageSize(120, 120);
-                imageLoader.loadImage(url, targetSize, options, new SimpleImageLoadingListener() {
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        imageView.setImageBitmap(loadedImage);
-                    }
-                });*/
                 Glide
                         .with(context)
                         .load(url)
@@ -167,29 +143,9 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
         t.run();
     }
 
-    public void initOptions() {
-        options = new DisplayImageOptions.Builder()
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .imageScaleType(ImageScaleType.EXACTLY)
-                .cacheInMemory(false)
-                .cacheOnDisk(true)
-                .build();
-        cacheDir = StorageUtils.getCacheDirectory(context);
-        config = new ImageLoaderConfiguration.Builder(context)
-                .diskCache(new UnlimitedDiskCache(cacheDir))
-                .defaultDisplayImageOptions(options)
-                .build();
-        ImageLoader.getInstance().init(config);
-        imageLoader = ImageLoader.getInstance();
-    }
 
     @Override
     public int getItemCount() {
-        //try {
-        Log.d("size", " " + movies.size());
-        /*} catch (IndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }*/
         return movies.size() + 1;
     }
 

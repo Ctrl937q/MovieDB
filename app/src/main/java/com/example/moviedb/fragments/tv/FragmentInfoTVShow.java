@@ -76,7 +76,6 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
     List<ResultTV> resultTvList;
     private final int CacheSize = 52428800;
     private final int MinFreeSpace = 2048;
-    private ImageLoader imageLoader;
 
 
     @Nullable
@@ -169,7 +168,6 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
 
     public void imageLoad(){
         File cacheDir = StorageUtils.getCacheDirectory(getActivity());
-        imageLoader = ImageLoader.getInstance();
         long size = 0;
         File[] filesCache = cacheDir.listFiles();
         for (File file : filesCache) {
