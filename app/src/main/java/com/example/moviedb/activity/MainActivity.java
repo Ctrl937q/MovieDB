@@ -1,5 +1,6 @@
 package com.example.moviedb.activity;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (menuItem.getItemId() == R.id.item_movies) {
                     clickOnMovies();
                 } else if (menuItem.getItemId() == R.id.item_tv_shows) {
+
                     clickOnTv();
                 }else  if(menuItem.getItemId() == R.id.item_genres){
                     clickOnGenres();
@@ -116,7 +118,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void clickOnMovies() {
-        setTitle("Movies");
+        mNavigationView.getMenu().getItem(1).setChecked(false);
+        mNavigationView.getMenu().getItem(2).setChecked(false);
+        mNavigationView.getMenu().getItem(0).setChecked(true);        setTitle("Movies");
         drawable1 = getResources().getDrawable(R.drawable.iron);
         drawable2 = getResources().getDrawable(R.drawable.superman);
         drawable3 = getResources().getDrawable(R.drawable.spider);
@@ -181,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void clickOnTv() {
+        mNavigationView.getMenu().getItem(1).setChecked(true);
+        mNavigationView.getMenu().getItem(0).setChecked(false);
+        mNavigationView.getMenu().getItem(2).setChecked(false);
         drawable5 = getResources().getDrawable(R.drawable.flash);
         drawable6 = getResources().getDrawable(R.drawable.game);
         drawable7 = getResources().getDrawable(R.drawable.spartakus);

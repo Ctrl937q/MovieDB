@@ -48,15 +48,14 @@ public class ActivityGenreDetails extends AppCompatActivity implements View.OnCl
         textViewRetry = (TextView) findViewById(R.id.textView_retry_internet_genre_details);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff_main_genre_details);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_genre_details);
+        mNavigationView.getMenu().getItem(2).setChecked(true);
         button.setOnClickListener(this);
         Intent intent = getIntent();
         final String filmTitle = intent.getStringExtra("title");
-
         final Toolbar toolbar = viewPager.getToolbar();
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
-
         setTitle(filmTitle);
         drawable1 = getResources().getDrawable(R.drawable.genre);
         viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {

@@ -1,17 +1,14 @@
 package com.example.moviedb.fragments.genre;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.AdapterForGenreDetails;
@@ -22,28 +19,10 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-import com.example.moviedb.Const;
-import com.example.moviedb.R;
-import com.example.moviedb.adapters.UpComingAdapter;
 import com.example.moviedb.internet.TestInternetConnection;
-import com.example.moviedb.model.movie.Movie;
-import com.example.moviedb.model.movie.MovieResponse;
-import com.example.moviedb.retrofit.ApiClient;
 import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
-import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 
 public class FragmentGenreDetails extends Fragment{
 
@@ -54,12 +33,14 @@ public class FragmentGenreDetails extends Fragment{
     Call<GenreDetails> call;
     int id;
     AdapterForGenreDetails adapterForGenreDetails;
+    ProgressBar progressBar;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_genre_details, container, false);
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_genre_details);
+        progressBar = (ProgressBar)rootView.findViewById(R.id.progressBar_genre_details);
         linearLayoutManager = new LinearLayoutManager(getContext());
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_genre_details);
         id = getActivity().getIntent().getIntExtra("id", 1);
@@ -73,6 +54,7 @@ public class FragmentGenreDetails extends Fragment{
                 rv.addItemDecoration(new MaterialViewPagerHeaderDecorator());
                 rv.setAdapter(adapterForGenreDetails);
                 rv.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override

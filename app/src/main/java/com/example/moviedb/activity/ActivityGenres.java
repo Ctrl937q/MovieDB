@@ -42,6 +42,7 @@ public class ActivityGenres extends AppCompatActivity {
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout_genres);
         navigationView = (NavigationView) findViewById(R.id.shitstuff_main_genres);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_genres);
+        navigationView.getMenu().getItem(2).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {

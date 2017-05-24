@@ -58,17 +58,18 @@
 
     </com.github.florent37.materialviewpager.MaterialViewPager>
 
-    <android.support.design.widget.NavigationView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/shitstuff_main"
         android:layout_width="wrap_content"
-        android:backgroundTint="@color/navigation_view_color"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:id="@+id/shitstuff_main"
+        android:backgroundTint="@color/navigation_view_color"
+        app:headerLayout="@layout/header_nav_view_activity_main"
+        app:itemBackground="@android:color/transparent"
+        app:itemIconTint="@color/drawer_item"
         app:itemTextColor="@color/black"
-        app:menu="@menu/drawermenu"
-        android:layout_marginTop="-24dp" />
+        app:menu="@menu/drawermenu" />
 
 </android.support.v4.widget.DrawerLayout>
 

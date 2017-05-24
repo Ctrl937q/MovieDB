@@ -19,10 +19,11 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:layout_alignParentTop="true"
+            android:indeterminateTint="@color/green"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="224dp" />
+            android:layout_marginTop="320dp"
+            />
     </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>
