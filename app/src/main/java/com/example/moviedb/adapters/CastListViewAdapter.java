@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -33,15 +34,9 @@ public class CastListViewAdapter extends BaseAdapter {
     List<Cast> castsList;
     LayoutInflater layoutInflater;
     ImageLoader imageLoader;
-    private final int CacheSize = 52428800; // 50MB
-    private final int MinFreeSpace = 2048; // 2MB
-
-    DisplayImageOptions options = new DisplayImageOptions.Builder()
-            .bitmapConfig(Bitmap.Config.RGB_565)
-            .imageScaleType(ImageScaleType.EXACTLY)
-            .cacheInMemory(false)
-            .cacheOnDisk(true)
-            .build();
+    private final int CacheSize = 52428800;
+    private final int MinFreeSpace = 2048;
+    ProgressBar progressBar;
 
     public CastListViewAdapter(Context context, List<Cast> castsList) {
         this.context = context;
@@ -73,6 +68,7 @@ public class CastListViewAdapter extends BaseAdapter {
         if (view == null) {
             view = layoutInflater.inflate(R.layout.item_for_list_view_cast, parent, false);
         }
+        //progressBar = (ProgressBar)view.findViewById(R.id.progressBar_listView);
         textViewCastName = (TextView) view.findViewById(R.id.text_view_for_item_list_view_name);
         textViewCastCharacter = (TextView) view.findViewById(R.id.text_view_for_item_list_view_CastCharacter);
         imageView_cast = (ImageView) view.findViewById(R.id.image_view_for_item_list_view_cast);
@@ -107,6 +103,8 @@ public class CastListViewAdapter extends BaseAdapter {
                 }
             });
             t.run();
+            //progressBar.setVisibility(View.INVISIBLE);
+
         }else {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -129,6 +127,7 @@ public class CastListViewAdapter extends BaseAdapter {
                 }
             });
             t.run();
+            //progressBar.setVisibility(View.INVISIBLE);
         }
 
         textViewCastName.setText(castsList.get(position).getName());

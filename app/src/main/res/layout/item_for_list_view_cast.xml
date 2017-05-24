@@ -4,6 +4,18 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:id="@+id/progressBar_listView"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            android:layout_toLeftOf="@+id/linearLayout"
+            android:layout_toStartOf="@+id/linearLayout" />
 
    <ImageView
        android:layout_width="63dp"
@@ -15,9 +27,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="7dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/image_view_for_item_list_view_cast"
+        android:layout_toEndOf="@+id/image_view_for_item_list_view_cast"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:id="@+id/linearLayout">
 
         <TextView
             android:id="@+id/text_view_for_item_list_view_name"
@@ -33,5 +49,6 @@
             android:text="overView" />
     </LinearLayout>
 
+    </RelativeLayout>
 
 </LinearLayout>
