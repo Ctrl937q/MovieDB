@@ -5,18 +5,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.UpComingAdapter;
 import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.movie.Movie;
 import com.example.moviedb.model.movie.MovieResponse;
+import com.example.moviedb.model.search.SearchResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
 
@@ -59,7 +60,6 @@ public class UpComingFragment extends Fragment {
             public void onFailure(Call<MovieResponse> call, Throwable t) {
             }
         });
-
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

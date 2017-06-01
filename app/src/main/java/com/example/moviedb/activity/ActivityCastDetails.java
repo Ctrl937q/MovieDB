@@ -91,7 +91,6 @@ public class ActivityCastDetails extends AppCompatActivity implements View.OnCli
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         int id = intent.getIntExtra("cast_id", 1);
-        String profile_path = intent.getStringExtra("profile_path");
         pagerAdapterCastDetails = new PagerAdapterCastDetails(getSupportFragmentManager(), ActivityCastDetails.this);
         viewPager.setAdapter(pagerAdapterCastDetails);
         viewPager.setOffscreenPageLimit(2);

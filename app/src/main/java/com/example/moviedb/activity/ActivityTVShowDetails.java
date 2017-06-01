@@ -28,7 +28,6 @@ public class ActivityTVShowDetails extends AppCompatActivity implements View.OnC
     Button button_retry;
     TextView textView_retry;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

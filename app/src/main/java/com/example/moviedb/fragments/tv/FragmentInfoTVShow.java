@@ -167,14 +167,17 @@ public class FragmentInfoTVShow extends Fragment implements View.OnClickListener
     }
 
     public void imageLoad(){
-        File cacheDir = StorageUtils.getCacheDirectory(getActivity());
-        long size = 0;
-        File[] filesCache = cacheDir.listFiles();
-        for (File file : filesCache) {
-            size += file.length();
-        }
-        if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
-            ImageLoader.getInstance().getDiskCache().clear();
+        File cacheDir;
+        cacheDir = StorageUtils.getCacheDirectory(getActivity());
+        if(cacheDir != null) {
+            long size = 0;
+            File[] filesCache = cacheDir.listFiles();
+            for (File file : filesCache) {
+                size += file.length();
+            }
+            if (cacheDir.getUsableSpace() < MinFreeSpace || size > CacheSize) {
+                ImageLoader.getInstance().getDiskCache().clear();
+            }
         }
     }
 

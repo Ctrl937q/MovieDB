@@ -66,6 +66,10 @@
             android:screenOrientation="portrait">
 
         </activity>
+
+        <activity android:name=".activity.ActivitySearch">
+
+        </activity>
     </application>
 
 </manifest>

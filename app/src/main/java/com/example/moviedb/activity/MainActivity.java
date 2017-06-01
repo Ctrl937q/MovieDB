@@ -1,6 +1,5 @@
 package com.example.moviedb.activity;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,13 +9,19 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.moviedb.Const;
 import com.example.moviedb.R;
+import com.example.moviedb.fragments.search.FragmentSearch;
 import com.example.moviedb.fragments.tv.AiringTodayFragmentTV;
 import com.example.moviedb.fragments.movie.NowPlayingFragment;
 import com.example.moviedb.fragments.tv.OnTheAirFragmentTV;
@@ -26,8 +31,20 @@ import com.example.moviedb.fragments.movie.TopRatedFragment;
 import com.example.moviedb.fragments.tv.TopRatedFragmentTV;
 import com.example.moviedb.fragments.movie.UpComingFragment;
 import com.example.moviedb.internet.TestInternetConnection;
+import com.example.moviedb.model.movie.MovieResponse;
+import com.example.moviedb.model.search.Result;
+import com.example.moviedb.model.search.SearchResponse;
+import com.example.moviedb.retrofit.ApiClient;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
+import com.nostra13.universalimageloader.utils.L;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -45,7 +62,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Drawable drawable6;
     Drawable drawable7;
     Drawable drawable8;
-    Drawable drawable9;
+    Call<SearchResponse> call;
+    List<Result> list;
+    int totalRes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button.setOnClickListener(this);
         Intent intent = getIntent();
         String keyFromActivity = intent.getStringExtra("startActivityFromTVShow");
-
         if (!TestInternetConnection.checkConnection(getApplicationContext())) {
             viewPager.setVisibility(View.GONE);
             button.setVisibility(View.VISIBLE);
@@ -82,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (menuItem.getItemId() == R.id.item_tv_shows) {
 
                     clickOnTv();
-                }else  if(menuItem.getItemId() == R.id.item_genres){
+                } else if (menuItem.getItemId() == R.id.item_genres) {
                     clickOnGenres();
                 }
                 return false;
@@ -96,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (keyFromActivity != null) {
             if (keyFromActivity.equals("TV_Show")) {
                 clickOnTv();
-            }else if(keyFromActivity.equals("Movies")){
+            } else if (keyFromActivity.equals("Movies")) {
                 clickOnMovies();
-            }else if(keyFromActivity.equals("Genres")){
+            } else if (keyFromActivity.equals("Genres")) {
                 clickOnGenres();
             }
         }
@@ -117,10 +135,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!TestInternetConnection.checkConnection(getApplicationContext())) {
+                    viewPager.setVisibility(View.GONE);
+                    button.setVisibility(View.VISIBLE);
+                    textViewRetry.setVisibility(View.VISIBLE);
+                } else {
+                    call = ApiClient.getClient().getSearch(1, query, Const.API_KEY);
+                    call.enqueue(new Callback<SearchResponse>() {
+                        @Override
+                        public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                            totalRes = response.body().getTotalResults();
+                        }
+
+                        @Override
+                        public void onFailure(Call<SearchResponse> call, Throwable t) {
+
+                        }
+                    });
+                        Intent intent = new Intent(MainActivity.this, ActivitySearch.class);
+                        intent.putExtra("text", query);
+                        startActivity(intent);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.getQuery();
+        return super.onCreateOptionsMenu(menu);
+    }
+
     public void clickOnMovies() {
         mNavigationView.getMenu().getItem(1).setChecked(false);
         mNavigationView.getMenu().getItem(2).setChecked(false);
-        mNavigationView.getMenu().getItem(0).setChecked(true);        setTitle("Movies");
+        mNavigationView.getMenu().getItem(0).setChecked(true);
+        setTitle("Movies");
         drawable1 = getResources().getDrawable(R.drawable.iron);
         drawable2 = getResources().getDrawable(R.drawable.superman);
         drawable3 = getResources().getDrawable(R.drawable.spider);

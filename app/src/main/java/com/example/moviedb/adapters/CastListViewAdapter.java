@@ -68,7 +68,6 @@ public class CastListViewAdapter extends BaseAdapter {
         if (view == null) {
             view = layoutInflater.inflate(R.layout.item_for_list_view_cast, parent, false);
         }
-        //progressBar = (ProgressBar)view.findViewById(R.id.progressBar_listView);
         textViewCastName = (TextView) view.findViewById(R.id.text_view_for_item_list_view_name);
         textViewCastCharacter = (TextView) view.findViewById(R.id.text_view_for_item_list_view_CastCharacter);
         imageView_cast = (ImageView) view.findViewById(R.id.image_view_for_item_list_view_cast);
@@ -103,7 +102,6 @@ public class CastListViewAdapter extends BaseAdapter {
                 }
             });
             t.run();
-            //progressBar.setVisibility(View.INVISIBLE);
 
         }else {
             Thread t = new Thread(new Runnable() {
@@ -127,7 +125,6 @@ public class CastListViewAdapter extends BaseAdapter {
                 }
             });
             t.run();
-            //progressBar.setVisibility(View.INVISIBLE);
         }
 
         textViewCastName.setText(castsList.get(position).getName());

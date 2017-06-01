@@ -5,6 +5,7 @@ import com.example.moviedb.model.genre.Genres;
 import com.example.moviedb.model.movie.CastDetails;
 import com.example.moviedb.model.movie.MovieDetails;
 import com.example.moviedb.model.movie.MovieResponse;
+import com.example.moviedb.model.search.SearchResponse;
 import com.example.moviedb.model.tv.details.TVDetailsResponseTV;
 import com.example.moviedb.model.tv.standart.TVResponse;
 
@@ -15,16 +16,16 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @GET("discover/movie?page=")
+    @GET("discover/movie")
     Call<MovieResponse> getPopularyMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("movie/top_rated?page=")
+    @GET("movie/top_rated")
     Call<MovieResponse> getTopRatedMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("movie/upcoming?page=")
+    @GET("movie/upcoming")
     Call<MovieResponse> getUpcomingMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("movie/now_playing?page=")
+    @GET("movie/now_playing")
     Call<MovieResponse> getNowPlayingMovies(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
 //---------------------------------------------------------------------------------------------------------------
@@ -37,16 +38,16 @@ public interface ApiInterface {
 
 //---------------------------------------------------------------------------------------------------------------
 
-    @GET("discover/tv?page=")
+    @GET("discover/tv")
     Call<TVResponse> getPopularyTVShow(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("tv/top_rated?page=")
+    @GET("tv/top_rated")
     Call<TVResponse> getTopRatedTVShow(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("tv/airing_today?page=")
+    @GET("tv/airing_today")
     Call<TVResponse> getAiringTodayTVShow(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    @GET("tv/on_the_air?page=")
+    @GET("tv/on_the_air")
     Call<TVResponse> getOnTheAirTVShow(@Query("page") Integer numberPage, @Query("api_key") String apiKey);
 //------------------------------------------------------------------------------------------------------------------
 
@@ -55,12 +56,12 @@ public interface ApiInterface {
 
 //------------------------------------------------------------------------------------------------------------------
 
-    @GET("genre/movie/list?")
+    @GET("genre/movie/list")
     Call<Genres> getGenres(@Query("api_key") String apiKey);
 
-    @GET("genre/{id}/movies?page=")
+    @GET("genre/{id}/movies")
     Call<GenreDetails> getGenreDetails(@Path("id") Integer id, @Query("page") Integer numberPage, @Query("api_key") String apiKey);
 
-    /*@GET("search/multi?&page=&query={text}")
-    Call<?> getGenre(@Query("page") Integer numberPage, @Path("text") String text, @Query("api_key") String apiKey);*/
+    @GET("search/multi")
+    Call<SearchResponse> getSearch(@Query("page") Integer numberPage, @Query("query") String text, @Query("api_key") String apiKey);
 }
