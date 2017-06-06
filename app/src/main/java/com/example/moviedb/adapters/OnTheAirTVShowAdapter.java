@@ -120,7 +120,12 @@ public class OnTheAirTVShowAdapter extends RecyclerView.Adapter<OnTheAirTVShowAd
             ImageLoader.getInstance().getDiskCache().clear();
         }
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            if(movies.get(position).getPosterPath() == null){
+                setImageNotFound(holder.imageView);
+            }else {
+                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            }
+
             holder.textViewName.setText(movies.get(position).getName());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getFirstAirDate()));
@@ -138,6 +143,23 @@ public class OnTheAirTVShowAdapter extends RecyclerView.Adapter<OnTheAirTVShowAd
                         .load(url)
                         .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView);
+            }
+        });
+        t.run();
+    }
+
+    public void setImageNotFound(final ImageView imageView) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(R.drawable.notimagefound)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);

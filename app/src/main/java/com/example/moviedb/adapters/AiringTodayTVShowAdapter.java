@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
@@ -28,8 +29,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import java.io.File;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +56,7 @@ public class AiringTodayTVShowAdapter extends RecyclerView.Adapter<AiringTodayTV
 
     @Override
     public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-        layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v;
         if (viewType == FOOTER_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
@@ -120,15 +123,17 @@ public class AiringTodayTVShowAdapter extends RecyclerView.Adapter<AiringTodayTV
             ImageLoader.getInstance().getDiskCache().clear();
         }
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            if (movies.get(position).getPosterPath() == null) {
+                setImageNotFound(holder.imageView);
+            } else {
+                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            }
             holder.textViewName.setText(movies.get(position).getName());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getFirstAirDate()));
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void setImage(final String url, final ImageView imageView) {
@@ -140,6 +145,23 @@ public class AiringTodayTVShowAdapter extends RecyclerView.Adapter<AiringTodayTV
                         .load(url)
                         .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView);
+            }
+        });
+        t.run();
+    }
+
+    public void setImageNotFound(final ImageView imageView) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(R.drawable.notimagefound)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
                         .crossFade()
                         .into(imageView);

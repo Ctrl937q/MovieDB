@@ -144,6 +144,8 @@ public class TopRatedTVShowAdapter extends RecyclerView.Adapter<TopRatedTVShowAd
     }
 
 
+
+
     @Override
     public int getItemCount() {
         return movies.size() + 1;

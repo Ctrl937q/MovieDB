@@ -3,7 +3,6 @@ package com.example.moviedb.fragments.search;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
 import com.example.moviedb.adapters.AdapterForSearch;
@@ -24,11 +24,8 @@ import com.example.moviedb.internet.TestInternetConnection;
 import com.example.moviedb.model.search.Result;
 import com.example.moviedb.model.search.SearchResponse;
 import com.example.moviedb.retrofit.ApiClient;
-import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,7 +40,6 @@ public class FragmentSearch extends Fragment {
     String textSearch;
     AdapterForSearch adapterForSearch;
     ProgressBar progressBar;
-
 
     @Nullable
     @Override
@@ -71,7 +67,6 @@ public class FragmentSearch extends Fragment {
                     rv.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.INVISIBLE);
                     Log.d("text", " " + response.body().getTotalResults());
-
                 }
             }
 
@@ -103,7 +98,6 @@ public class FragmentSearch extends Fragment {
 
                         }
                     });
-
                 }
                 adapterForSearch = new AdapterForSearch(getActivity(), list, textSearch);
                 rv.setAdapter(adapterForSearch);
@@ -128,6 +122,12 @@ public class FragmentSearch extends Fragment {
                 call.enqueue(new Callback<SearchResponse>() {
                     @Override
                     public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+                        if (!TestInternetConnection.checkConnection(getActivity())) {
+                           /* viewPager.setVisibility(View.GONE);
+                            button.setVisibility(View.VISIBLE);
+                            textViewRetry.setVisibility(View.VISIBLE);*/
+                        }
+
                         if (response.body().getTotalResults() == 0) {
                             Toast.makeText(getActivity(), "no results found", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);

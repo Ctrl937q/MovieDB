@@ -130,15 +130,17 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
             }
         }
         try {
-            setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            if(movies.get(position).getPosterPath() == null){
+                setImageNotFound(holder.imageView);
+            }else {
+                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            }
             holder.textViewName.setText(movies.get(position).getTitle());
             holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                     movies.get(position).getReleaseDate()));
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void setImage(final String url, final ImageView imageView) {
@@ -148,6 +150,23 @@ public class TopRatingAdapter extends RecyclerView.Adapter<TopRatingAdapter.Hold
                 Glide
                         .with(context)
                         .load(url)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView);
+            }
+        });
+        t.run();
+    }
+
+    public void setImageNotFound(final ImageView imageView) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(R.drawable.notimagefound)
                         .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)

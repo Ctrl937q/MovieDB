@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.moviedb.Const;
@@ -78,7 +79,7 @@ public class AdapterForSearch extends RecyclerView.Adapter<AdapterForSearch.Hold
                         Toast.makeText(context, "no internet connection", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(context, "loading more...", Toast.LENGTH_SHORT).show();
-                        Call<SearchResponse> call = ApiClient.getClient().getSearch(pageNumber, text ,Const.API_KEY);
+                        Call<SearchResponse> call = ApiClient.getClient().getSearch(pageNumber, text, Const.API_KEY);
                         pageNumber++;
                         call.enqueue(new Callback<SearchResponse>() {
                             @Override
@@ -106,17 +107,17 @@ public class AdapterForSearch extends RecyclerView.Adapter<AdapterForSearch.Hold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(movies.get(position).getMediaType().equals("movie")){
+                if (movies.get(position).getMediaType().equals("movie")) {
                     Intent intent = new Intent(context, ActivityDetails.class);
                     intent.putExtra("id", movies.get(position).getId());
                     intent.putExtra("title", movies.get(position).getTitle());
                     context.startActivity(intent);
-                }else if(movies.get(position).getMediaType().equals("tv")){
+                } else if (movies.get(position).getMediaType().equals("tv")) {
                     Intent intent = new Intent(context, ActivityTVShowDetails.class);
                     intent.putExtra("id", movies.get(position).getId());
                     intent.putExtra("title", movies.get(position).getName());
                     context.startActivity(intent);
-                }else {
+                } else {
                     Intent intent = new Intent(context, ActivityCastDetails.class);
                     Log.d("idPerson", " " + movies.get(position).getId());
                     intent.putExtra("cast_id", movies.get(position).getId());
@@ -136,20 +137,32 @@ public class AdapterForSearch extends RecyclerView.Adapter<AdapterForSearch.Hold
             ImageLoader.getInstance().getDiskCache().clear();
         }
         try {
-            if(movies.get(position).getMediaType().equals("movie")) {
-                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            if (movies.get(position).getMediaType().equals("movie")) {
+                if (movies.get(position).getPosterPath() == null) {
+                    setImageNotFound(holder.imageView);
+                } else {
+                    setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+                }
                 holder.textViewType.setText(movies.get(position).getMediaType());
                 holder.textViewName.setText(movies.get(position).getTitle());
                 holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                         movies.get(position).getReleaseDate()));
-            }else if(movies.get(position).getMediaType().equals("tv")){
-                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+            } else if (movies.get(position).getMediaType().equals("tv")) {
+                if (movies.get(position).getPosterPath() == null) {
+                    setImageNotFound(holder.imageView);
+                } else {
+                    setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getPosterPath(), holder.imageView);
+                }
                 holder.textViewType.setText(movies.get(position).getMediaType());
                 holder.textViewName.setText(movies.get(position).getName());
                 holder.textViewYear.setText(DateConverter.formateDateFromstring("yyyy-MM-dd", "dd, MMMM, yyy",
                         movies.get(position).getFirstAirDate()));
-            }else{
-                setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getProfilePath(), holder.imageView);
+            } else {
+                if (movies.get(position).getProfilePath() == null) {
+                    setImageNotFound(holder.imageView);
+                } else {
+                    setImage(Const.IMAGE_POSTER_PATH_URL + movies.get(position).getProfilePath(), holder.imageView);
+                }
                 holder.textViewType.setText(movies.get(position).getMediaType());
                 holder.textViewName.setText(movies.get(position).getName());
                 holder.textViewYear.setText("");
@@ -166,6 +179,23 @@ public class AdapterForSearch extends RecyclerView.Adapter<AdapterForSearch.Hold
                 Glide
                         .with(context)
                         .load(url)
+                        .override(110, 110)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.placeholder_item_recycler_view)
+                        .crossFade()
+                        .into(imageView);
+            }
+        });
+        t.run();
+    }
+
+    public void setImageNotFound(final ImageView imageView) {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide
+                        .with(context)
+                        .load(R.drawable.notimagefound)
                         .override(110, 110)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.drawable.placeholder_item_recycler_view)
@@ -203,7 +233,7 @@ public class AdapterForSearch extends RecyclerView.Adapter<AdapterForSearch.Hold
         public Holder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image_view_for_item);
-            textViewType = (TextView)itemView.findViewById(R.id.item_text_view_type);
+            textViewType = (TextView) itemView.findViewById(R.id.item_text_view_type);
             textViewName = (TextView) itemView.findViewById(R.id.item_text_view_name);
             textViewYear = (TextView) itemView.findViewById(R.id.item_text_view_year);
         }
