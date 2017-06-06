@@ -79,7 +79,7 @@ public class ActivitySearch extends AppCompatActivity implements View.OnClickLis
         }
         setTitle("Search");
 
-        drawable1 = getResources().getDrawable(R.drawable.genre);
+        drawable1 = getResources().getDrawable(R.drawable.searchpicture);
         viewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
             @Override
             public HeaderDesign getHeaderDesign(int page) {
@@ -151,42 +151,6 @@ public class ActivitySearch extends AppCompatActivity implements View.OnClickLis
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(final String query) {
-                if (!TestInternetConnection.checkConnection(getApplicationContext())) {
-                    viewPager.setVisibility(View.GONE);
-                    button.setVisibility(View.VISIBLE);
-                    textViewRetry.setVisibility(View.VISIBLE);
-                } else {
-                    call = ApiClient.getClient().getSearch(1, query, Const.API_KEY);
-                    call.enqueue(new Callback<SearchResponse>() {
-                        @Override
-                        public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<SearchResponse> call, Throwable t) {
-
-                        }
-                    });
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }*/
 
     @Override
     public void onClick(View v) {

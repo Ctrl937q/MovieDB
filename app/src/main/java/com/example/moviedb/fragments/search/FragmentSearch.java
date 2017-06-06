@@ -49,14 +49,12 @@ public class FragmentSearch extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.tab_search, container, false);
-
         rv = (RecyclerView) rootView.findViewById(R.id.rv_recycler_search);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar_search);
         linearLayoutManager = new LinearLayoutManager(getContext());
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_layout_search);
         textSearch = getActivity().getIntent().getStringExtra("text");
         setHasOptionsMenu(true);
-
         call = ApiClient.getClient().getSearch(1, textSearch, Const.API_KEY);
         call.enqueue(new Callback<SearchResponse>() {
             @Override
