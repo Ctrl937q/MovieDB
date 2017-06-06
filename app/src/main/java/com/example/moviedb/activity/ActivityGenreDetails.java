@@ -73,7 +73,7 @@ public class ActivityGenreDetails extends AppCompatActivity implements View.OnCl
             @Override
             public Fragment getItem(int position) {
                 if (position == 0) {
-                    return FragmentGenreDetails.newInstance(); //TODO FragmentGenreDetails
+                    return FragmentGenreDetails.newInstance();
                 }
                 return null;
             }

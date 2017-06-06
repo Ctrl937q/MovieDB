@@ -1,5 +1,6 @@
 package com.example.moviedb.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,23 +10,33 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.moviedb.Const;
 import com.example.moviedb.R;
-import com.example.moviedb.fragments.genre.FragmentGenreDetails;
+import com.example.moviedb.adapters.AdapterForSearch;
 import com.example.moviedb.fragments.search.FragmentSearch;
 import com.example.moviedb.internet.TestInternetConnection;
+import com.example.moviedb.model.search.Result;
 import com.example.moviedb.model.search.SearchResponse;
 import com.example.moviedb.retrofit.ApiClient;
 import com.github.florent37.materialviewpager.MaterialViewPager;
 import com.github.florent37.materialviewpager.header.HeaderDesign;
+import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,20 +50,29 @@ public class ActivitySearch extends AppCompatActivity implements View.OnClickLis
     NavigationView mNavigationView;
     DrawerLayout drawerLayout;
     Drawable drawable1;
+    Call<SearchResponse> call;
+    FragmentSearch fragmentSearch;
+    AdapterForSearch adapterForSearch;
+    LinearLayoutManager linearLayoutManager;
+    List<Result> list;
+    LayoutInflater layoutInflater;
+    RecyclerView rv;
+    String text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         viewPager = (MaterialViewPager) findViewById(R.id.materialViewPager_search);
-
         button = (Button) findViewById(R.id.button_search);
         textViewRetry = (TextView) findViewById(R.id.textView_retry_internet_search);
         mNavigationView = (NavigationView) findViewById(R.id.shitstuff_main_search);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_search);
+        fragmentSearch = new FragmentSearch();
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         button.setOnClickListener(this);
         Intent intent = getIntent();
-        String text = intent.getStringExtra("text");
+        text = intent.getStringExtra("text");
         final Toolbar toolbar = viewPager.getToolbar();
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -131,6 +151,42 @@ public class ActivitySearch extends AppCompatActivity implements View.OnClickLis
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
+
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                if (!TestInternetConnection.checkConnection(getApplicationContext())) {
+                    viewPager.setVisibility(View.GONE);
+                    button.setVisibility(View.VISIBLE);
+                    textViewRetry.setVisibility(View.VISIBLE);
+                } else {
+                    call = ApiClient.getClient().getSearch(1, query, Const.API_KEY);
+                    call.enqueue(new Callback<SearchResponse>() {
+                        @Override
+                        public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<SearchResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }*/
 
     @Override
     public void onClick(View v) {

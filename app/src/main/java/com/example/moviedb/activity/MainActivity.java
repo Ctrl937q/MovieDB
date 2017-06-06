@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Call<SearchResponse> call;
     List<Result> list;
     int totalRes;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,10 +140,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(final String query) {
                 if (!TestInternetConnection.checkConnection(getApplicationContext())) {
                     viewPager.setVisibility(View.GONE);
                     button.setVisibility(View.VISIBLE);
@@ -151,7 +153,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     call.enqueue(new Callback<SearchResponse>() {
                         @Override
                         public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {
-                            totalRes = response.body().getTotalResults();
+                                Intent intent = new Intent(MainActivity.this, ActivitySearch.class);
+                                intent.putExtra("text", query);
+                                startActivity(intent);
                         }
 
                         @Override
@@ -159,9 +163,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
                     });
-                        Intent intent = new Intent(MainActivity.this, ActivitySearch.class);
-                        intent.putExtra("text", query);
-                        startActivity(intent);
                 }
                 return false;
             }
@@ -171,8 +172,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         });
-        searchView.getQuery();
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    protected void onPause() {
+        searchView.onActionViewCollapsed();
+        super.onPause();
     }
 
     public void clickOnMovies() {

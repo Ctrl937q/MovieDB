@@ -89,8 +89,6 @@ public class ActivityGenres extends AppCompatActivity {
             }
         });
 
-
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
